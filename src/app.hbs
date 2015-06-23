@@ -1,5 +1,5 @@
 <div class="cleanslate rc-app">
-	<form action="http://www.rentalcars.com" target="_blank">
+	<form name="rcAppForm" action="http://www.rentalcars.com" target="_blank">
 		<p class="rc-title">{{title}}</p>
 		<div class="rc-form-group rc-locations rc-locations--pickup">
 			<select class="rc-location rc-location--country" name="country">
@@ -29,6 +29,9 @@
 		<div class="rc-form-group rc-date rc-date--pickup">
 			<label for="rc-datepicker--pickup">{{pickupDate}}</label>
 			<input spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
+			<input type="hidden" name="puDay">
+			<input type="hidden" name="puMonth">
+			<input type="hidden" name="puYear">
 		</div>
 		<div class="rc-form-group rc-time rc-time--pickup">
 			<select class="rc-hour" name="puHour">
@@ -43,6 +46,9 @@
 		<div class="rc-form-group rc-date rc-date--dropoff">
 			<label for="rc-datepicker--dropoff">{{dropoffDate}}</label>
 			<input spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
+			<input type="hidden" name="doDay">
+			<input type="hidden" name="doMonth">
+			<input type="hidden" name="doYear">
 		</div>
 		<div class="rc-form-group rc-time rc-time--pickup">
 			<select class="rc-hour" name="doHour">

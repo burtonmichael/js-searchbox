@@ -51,6 +51,12 @@ require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], 
 		})
 	}
 
+	function setHiddenFields(date, fieldset) {
+		$(rcAppForm.elements[fieldset + 'Day']).val(date.getDate());
+		$(rcAppForm.elements[fieldset + 'Month']).val(date.getMonth() + 1);
+		$(rcAppForm.elements[fieldset + 'Year']).val(date.getFullYear());
+	}
+
 	if (noConflict) $.noConflict();
 
 	var defaults = {
@@ -74,6 +80,9 @@ require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], 
 
 	var endDate = new Date();
 	endDate.setDate(startDate.getDate() + 3);
+
+	setHiddenFields(startDate, 'pu');
+	setHiddenFields(endDate, 'do');
 
 	var pickupDate = new Pikaday({
 		defaultDate: startDate,
