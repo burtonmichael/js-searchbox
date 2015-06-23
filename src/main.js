@@ -1,6 +1,7 @@
 var rcApp = rcApp || {};
 
 require.config({
+	baseUrl: '',
 	paths: {
 		'translations': 'js/data/translations/en',
 		'handlebars.runtime': 'library/handlebars/handlebars.runtime.amd.min',
@@ -8,16 +9,25 @@ require.config({
 		'pikaday': 'library/pikaday/pikaday',
 		'helpers': 'js/helpers',
 		'template': 'templates/app.tpl'
-	},
-	shim: {
-		'handlebars.runtime': {
-			exports: 'Handlebars'
-		}
 	}
 })
 
 // load stuff
 require(['moment', 'pikaday', 'translations', 'template', 'helpers'], function(Moment, Pikaday, translations, template, helpers) {
+
+	var rcApp = rcApp || {};
+
+	var defaults = {
+		preflang: 'en',
+		translations: {
+		    title: "Search for Car Hire",
+		    country: "Country",
+		    city: "City",
+		    location: "Location",
+		    submit: "Search"
+	    },
+	    countries: []
+	}
 
 	var html = template(translations);
 
