@@ -1,32 +1,14 @@
-var rcApp = rcApp || {},
-    paths = {
-		'translations': 'js/data/translations/' + (rcApp.preflang || 'en'),
+var rcApp = rcApp || {};
+
+require.config({
+	paths: {
+		'translations': 'js/data/translations/en',
 		'handlebars.runtime': 'library/handlebars/handlebars.runtime.amd.min',
 		'moment': 'library/moment/min/moment.min',
 		'pikaday': 'library/pikaday/pikaday',
+		'helpers': 'js/helpers',
 		'template': 'templates/app.tpl'
-    };
-
-// check for existing jQuery
-var jQuery = window.jQuery,
-    // check for old versions of jQuery
-    oldjQuery = jQuery && !!jQuery.fn.jquery.match(/^1\.[0-7](\.|$)/),
-    jqueryPath = 'https://code.jquery.com/jquery-1.11.3.min',
-    noConflict;
-
-// check for jQuery 
-if (!jQuery || oldjQuery) {
-    // load if it's not available or doesn't meet min standards
-    paths.jquery = jqueryPath;
-    noConflict = !!oldjQuery;
-} else {
-    // register the current jQuery
-    define('jquery', [], function() { return jQuery; });
-}
-
-require.config({
-	baseUrl: '',
-	paths: paths,
+	},
 	shim: {
 		'handlebars.runtime': {
 			exports: 'Handlebars'
@@ -34,13 +16,10 @@ require.config({
 	}
 })
 
-
 // load stuff
-require(['jquery', 'handlebars.runtime', 'moment', 'pikaday', 'translations', 'template' ], function($, Hb, Moment, Pikaday, translations, template) {
+require(['moment', 'pikaday', 'translations', 'template', 'helpers'], function(Moment, Pikaday, translations, template, helpers) {
 
-	if (noConflict) $.noConflict();
-
-	var html = Hb.templates.app(translations);
+	var html = template(translations);
 
 	document.getElementById('app').innerHTML = html;
 

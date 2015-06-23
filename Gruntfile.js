@@ -5,14 +5,24 @@ module.exports = function(grunt) {
             compile: {
                 options: {
                     namespace: false,
-                    amd: true
+                    amd: 'handlebars.runtime'
                 },
                 files: {
                     'src/templates/app.tpl.js': 'src/app.hbs'
+                }
+            }
+        },
+        requirejs: {
+            compile: {
+                options: {
+                    baseUrl: './src/',
+                    name: 'main',
+                    out: 'tmp/requirejs.js'
                 }
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-handlebars');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 }

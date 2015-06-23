@@ -1,4 +1,4 @@
-define(['handlebars'], function(Handlebars) {
+define(['handlebars.runtime'], function(Handlebars) {
 
 return Handlebars.template({"1":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
