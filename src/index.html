@@ -3,11 +3,18 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
-	<link rel="stylesheet" href="library/pikaday/css/pikaday.css">
-	<link rel="stylesheet" href="library/cleanslate/cleanslate.css">
 </head>
 <body>
-	<div id="app"></div>
+	<div id="rc"></div>
+
+	<script>
+		rcApp = {
+			options: {
+				preflang: 'en',
+				containerId: 'rc'
+			}
+		}
+	</script>
 
 	<script data-main="main" src="library/requirejs/require.js"></script>
 
