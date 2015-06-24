@@ -1,44 +1,4 @@
-var rcApp = rcApp || {};
-
-var jQuery = window.jQuery,
-    // check for old versions of jQuery
-    oldjQuery = jQuery && !!jQuery.fn.jquery.match(/^1\.[0-6](\.|$)/),
-    localJqueryPath = 'https://code.jquery.com/jquery-1.11.3.min',
-	paths = {
-		'translations': 'js/data/translations/en',
-		'handlebars.runtime': 'library/handlebars/handlebars.runtime.amd.min',
-		'moment': 'library/moment/min/moment.min',
-		'pikaday': 'library/pikaday/pikaday',
-		'helpers': 'js/helpers',
-		'template': 'templates/app.tpl',
-		'jquery-cascading-dropdown': 'library/jquery-cascading-dropdown/dist/jquery.cascadingdropdown.min'
-	},
-    noConflict;
-
-// check for jQuery 
-if (!jQuery || oldjQuery) {
-    // load if it's not available or doesn't meet min standards
-    paths.jquery = localJqueryPath;
-    noConflict = !!oldjQuery;
-} else {
-    // register the current jQuery
-    define('jquery', [], function() { return jQuery; });
-}
-
-// set up require
-require.config({
-    paths: paths,
-	baseUrl: '',
-	include: ['jquery-cascading-dropdown'],
-	shim: {
-		'jquery-cascading-dropdown': {
-			deps: ['jquery']
-		}
-	}
-});
-
-// load stuff
-require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], function(Moment, Pikaday, translations, template, helpers, $) {
+require(['moment', 'pikaday', 'translations', 'template'], function(moment, Pikaday, translations, template) {
 
 	function loadCss(urls) {
 		$.each(urls, function(index, url) {
@@ -52,9 +12,10 @@ require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], 
 	}
 
 	function setHiddenFields(date, fieldset) {
-		$(rcAppForm.elements[fieldset + 'Day']).val(date.getDate());
-		$(rcAppForm.elements[fieldset + 'Month']).val(date.getMonth() + 1);
-		$(rcAppForm.elements[fieldset + 'Year']).val(date.getFullYear());
+		var rcEle = rcAppForm.elements;
+		$(rcEle[fieldset + 'Day']).val(date.date());
+		$(rcEle[fieldset + 'Month']).val(date.month() + 1);
+		$(rcEle[fieldset + 'Year']).val(date.year());
 	}
 
 	if (noConflict) $.noConflict();
@@ -62,7 +23,7 @@ require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], 
 	var defaults = {
 		preflang: 'en',
 		containerId: 'app',
-		dateFormat: 'D MMM YYYY'
+		dateFormat: translations.i18n.format
 	}
 
 	rcApp.options = $.extend(true, {}, defaults, rcApp.options);
@@ -76,34 +37,42 @@ require(['moment', 'pikaday', 'translations', 'template', 'helpers', 'jquery'], 
 
 	$container.html(template(translations));
 
-	var startDate = new Date();
+	var startDate = moment();
 
-	var endDate = new Date();
-	endDate.setDate(startDate.getDate() + 3);
+	var endDate = moment();
+	endDate.add('days', 3);
 
 	setHiddenFields(startDate, 'pu');
 	setHiddenFields(endDate, 'do');
 
 	var pickupDate = new Pikaday({
-		defaultDate: startDate,
-		minDate: startDate,
+		theme: 'asd',
+		defaultDate: startDate.toDate(),
+		minDate: startDate.toDate(),
 		setDefaultDate: true,
 	    field: document.getElementById('rc-datepicker--pickup'),
 	    format: rcApp.options.dateFormat,
+	    i18n: translations.i18n,
 	    onSelect: function() {
 	    	var date = this.getMoment();
 	    	dropoffDate.setMinDate(date);
-	    	if (date > dropoffDate.getMoment()) dropoffDate.setMoment(date);
+	    	if (date > dropoffDate.getMoment()) {
+	    		dropoffDate.setMoment(date);
+	    		setHiddenFields(date, 'do')
+	    	}
+	    	setHiddenFields(date, 'pu')
 	    }
 	});
 
 	var dropoffDate = new Pikaday({
-		defaultDate: endDate,
-		minDate: startDate,
+		defaultDate: endDate.toDate(),
+		minDate: startDate.toDate(),
 		setDefaultDate: true,
 	    field: document.getElementById('rc-datepicker--dropoff'),
 	    format: rcApp.options.dateFormat,
+	    i18n: translations.i18n,
 	    onSelect: function() {
+	    	setHiddenFields(date, 'do')
 	    }
 	});
 
