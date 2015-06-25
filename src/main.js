@@ -1,4 +1,4 @@
-require(['moment', 'pikaday', 'translations', 'template'], function(moment, Pikaday, translations, template) {
+require(['jquery', 'moment', 'pikaday', 'translations', 'template'], function($, moment, Pikaday, translations, template) {
 
 	function loadCss(urls) {
 		$.each(urls, function(index, url) {
