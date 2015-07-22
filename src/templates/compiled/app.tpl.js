@@ -11,7 +11,7 @@ return Handlebars.template({"1":function(depth0,helpers,partials,data) {
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "<div class=\"cleanslate rc-app\">\r\n	<form name=\"rcAppForm\" action=\"http://www.rentalcars.com\" target=\"_blank\">\r\n		<p class=\"rc-title\">"
+  return "<div class=\"rc-app\">\r\n	<form name=\"rcAppForm\" action=\"http://www.rentalcars.com\" target=\"_blank\">\r\n		<p class=\"rc-title\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
     + "</p>\r\n		<div class=\"rc-form-group rc-locations rc-locations--pickup\">\r\n			<select class=\"rc-location rc-location--country\" name=\"country\">\r\n				<option selected=\"selected\" disabled=\"disabled\" value=\"0\">"
     + alias3(((helper = (helper = helpers.country || (depth0 != null ? depth0.country : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"country","hash":{},"data":data}) : helper)))

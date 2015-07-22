@@ -1,6 +1,16 @@
 'use strict';
 module.exports = function(grunt) {
     grunt.initConfig({
+        sass: {
+            dist: {
+                options: {
+                    style: 'compressed'
+                },
+                files: {
+                    './src/css/base.css': './src/css/base.scss'
+                }
+            }
+        },
         handlebars: {
             compile: {
                 options: {
@@ -13,36 +23,55 @@ module.exports = function(grunt) {
             }
         },
         requirejs: {
-            options: {
-                baseUrl: "./src",
-                dir: "./dist",
-                name: "main",
-                paths: {
-                    "jquery": "libs/jquery/src/core",
-                    'moment': 'libs/moment/min/moment.min',
-                    'handlebars.runtime': 'libs/handlebars/handlebars.runtime.amd.min',
-                    'jquery-cascading-dropdown': 'libs/jquery-cascading-dropdown/jquery.cascadingdropdown.min',
-                    'pikaday': 'libs/pikaday/pikaday',
-                    'template': 'templates/compiled/app.tpl',
-                    'translations': 'js/data/translations/es'
-                },
-                shim: {
-                    'pikaday': {
-                        deps: ['moment']
+            build: {
+                options: {
+                    baseUrl: "./src/",
+                    out: "./dist/app.js",
+                    name: "../node_modules/almond/almond",
+                    include: "main",
+                    wrap: true,
+                    paths: {
+                        "jquery": "js/jquery/jquery.min",
+                        'moment': 'libs/moment/min/moment.min',
+                        'handlebars.runtime': 'libs/handlebars/handlebars.runtime.amd.min',
+                        'pikaday': 'libs/pikaday/pikaday',
+                        'template': 'templates/compiled/app.tpl',
+                        'cssLoader': 'js/cssLoader'
                     },
-                    'jquery.cascadingdropdown.min': {
-                        deps: ['jquery']
-                    }
+                    shim: {
+                        'pikaday': {
+                            deps: ['moment']
+                        },
+                        'jquery.cascadingdropdown.min': {
+                            deps: ['jquery']
+                        }
+                    },
+                    preserveLicenseComments: false
+                }
+            }
+        },
+        watch: {
+            build: {
+                files: ['src/**/*.js'],
+                tasks: ['watcher'],
+                options: {
+                    spawn: false,
                 },
-                map: {
-                    'jquery': 'libs/jquery/src'
-                },
-                optimizeCss: 'default'
+            }
+        },
+        clean: {
+            build: {
+                src: 'dist'
             }
         }
     });
 
-    grunt.loadNpmTasks("grunt-jquery-builder");
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-sass');
+
+    grunt.registerTask('default', ['clean', 'handlebars', 'requirejs', 'sass', 'watch'])
+    grunt.registerTask('watcher', ['clean', 'requirejs'])
 }

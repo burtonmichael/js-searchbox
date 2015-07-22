@@ -1,79 +1,80 @@
-require(['jquery', 'moment', 'pikaday', 'translations', 'template'], function($, moment, Pikaday, translations, template) {
+require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, moment, Pikaday, template, cssLoader) {
 
-	function loadCss(urls) {
-		$.each(urls, function(index, url) {
-			var link = $('<link/>', {
-				type: 'text/css',
-				rel: 'stylesheet',
-				href: url
-			});
-	    	$container.before(link);
-		})
-	}
+	var rcApp = window.rcApp || {}
 
-	function setHiddenFields(date, fieldset) {
+	jq.noConflict( true );
+
+	function setHiddenDateFields(date, fieldset) {
 		var rcEle = rcAppForm.elements;
-		$(rcEle[fieldset + 'Day']).val(date.date());
-		$(rcEle[fieldset + 'Month']).val(date.month() + 1);
-		$(rcEle[fieldset + 'Year']).val(date.year());
+		jq(rcEle[fieldset + 'Day']).val(date.date());
+		jq(rcEle[fieldset + 'Month']).val(date.month() + 1);
+		jq(rcEle[fieldset + 'Year']).val(date.year());
 	}
-
-	if (noConflict) $.noConflict();
 
 	var defaults = {
 		preflang: 'en',
-		containerId: 'app',
-		dateFormat: translations.i18n.format
+		containerId: 'app'
 	}
 
-	rcApp.options = $.extend(true, {}, defaults, rcApp.options);
+	rcApp = jq.extend(true, {}, defaults, rcApp.options);
 
-	var $container = $('#' + rcApp.options.containerId);
+	switch(typeof rcApp.css) {
+		case "undefined":
+			cssLoader.link('src/css/base.css')
+			break;
+		case "string":
+			cssLoader.link(rcApp.css)
+			break;
+		default:
+			break;
+	}
 
-	loadCss([
-		'library/cleanslate/cleanslate.css',
-		'library/pikaday/css/pikaday.css'
-	])
+	jq.getJSON('src/js/data/translations/' + rcApp.preflang + '.json', function(data) {
+		var translations = data;
 
-	$container.html(template(translations));
+		var $container = jq('#' + rcApp.containerId);
 
-	var startDate = moment();
+		$container.html(template(translations));
 
-	var endDate = moment();
-	endDate.add('days', 3);
+		var startDate = moment();
 
-	setHiddenFields(startDate, 'pu');
-	setHiddenFields(endDate, 'do');
+		var endDate = moment();
+		endDate.add(3, 'days');
 
-	var pickupDate = new Pikaday({
-		theme: 'asd',
-		defaultDate: startDate.toDate(),
-		minDate: startDate.toDate(),
-		setDefaultDate: true,
-	    field: document.getElementById('rc-datepicker--pickup'),
-	    format: rcApp.options.dateFormat,
-	    i18n: translations.i18n,
-	    onSelect: function() {
-	    	var date = this.getMoment();
-	    	dropoffDate.setMinDate(date);
-	    	if (date > dropoffDate.getMoment()) {
-	    		dropoffDate.setMoment(date);
-	    		setHiddenFields(date, 'do')
-	    	}
-	    	setHiddenFields(date, 'pu')
-	    }
-	});
+		setHiddenDateFields(startDate, 'pu');
+		setHiddenDateFields(endDate, 'do');
 
-	var dropoffDate = new Pikaday({
-		defaultDate: endDate.toDate(),
-		minDate: startDate.toDate(),
-		setDefaultDate: true,
-	    field: document.getElementById('rc-datepicker--dropoff'),
-	    format: rcApp.options.dateFormat,
-	    i18n: translations.i18n,
-	    onSelect: function() {
-	    	setHiddenFields(date, 'do')
-	    }
+		var pickupDate = new Pikaday({
+			defaultDate: startDate.toDate(),
+			minDate: startDate.toDate(),
+			setDefaultDate: true,
+		    field: document.getElementById('rc-datepicker--pickup'),
+		    format: rcApp.dateFormat || data.date.format,
+		    i18n: translations.date,
+		    theme: 'rc-app',
+		    onSelect: function(date) {
+		    	var dateMoment = this.getMoment();
+		    	dropoffDate.setMinDate(date);
+		    	if (dateMoment > dropoffDate.getMoment()) {
+		    		dropoffDate.setMoment(dateMoment);
+		    		setHiddenDateFields(dateMoment, 'do')
+		    	}
+		    	setHiddenDateFields(dateMoment, 'pu')
+		    }
+		});
+
+		var dropoffDate = new Pikaday({
+			defaultDate: endDate.toDate(),
+			minDate: startDate.toDate(),
+			setDefaultDate: true,
+		    field: document.getElementById('rc-datepicker--dropoff'),
+		    format: rcApp.dateFormat || data.date.format,
+		    i18n: translations.date,
+		    theme: 'rc-app',
+		    onSelect: function(date) {
+		    	setHiddenDateFields(this.getMoment(), 'do')
+		    }
+		});
 	});
 
 });
