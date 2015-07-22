@@ -29,12 +29,24 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 			break;
 	}
 
-	jq.getJSON('src/js/data/translations/' + rcApp.preflang + '.json', function(data) {
-		var translations = data;
+	jq.getJSON('/stand-alone-locale/translations/' + rcApp.preflang + '.json', function(data) {
 
 		var $container = jq('#' + rcApp.containerId);
 
-		$container.html(template(translations));
+		$container.html(template(data));
+
+		moment.defineLocale("preflang", data.moment);
+
+		moment.locale("preflang");
+
+        var i18n = {
+            previousMonth: data.previousMonth,
+            nextMonth: data.nextMonth,
+            months: data.moment.months,
+            monthsShort: data.moment.monthsShort,
+            weekdays: data.moment.weekdays,
+            weekdaysShort: data.moment.weekdaysShort
+        };
 
 		var startDate = moment();
 
@@ -49,8 +61,8 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 			minDate: startDate.toDate(),
 			setDefaultDate: true,
 		    field: document.getElementById('rc-datepicker--pickup'),
-		    format: rcApp.dateFormat || data.date.format,
-		    i18n: translations.date,
+		    format: 'L',
+		    i18n: i18n,
 		    theme: 'rc-app',
 		    onSelect: function(date) {
 		    	var dateMoment = this.getMoment();
@@ -68,8 +80,8 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 			minDate: startDate.toDate(),
 			setDefaultDate: true,
 		    field: document.getElementById('rc-datepicker--dropoff'),
-		    format: rcApp.dateFormat || data.date.format,
-		    i18n: translations.date,
+		    format: 'L',
+		    i18n: i18n,
 		    theme: 'rc-app',
 		    onSelect: function(date) {
 		    	setHiddenDateFields(this.getMoment(), 'do')

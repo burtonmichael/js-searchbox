@@ -1,11 +1,11 @@
 <div class="rc-app">
 	<form name="rcAppForm" action="http://www.rentalcars.com" target="_blank">
-		<p class="rc-title">{{title}}</p>
+		<h3 class="rc-title">{{title}}</h3>
 		<div class="rc-form-group rc-locations rc-locations--pickup">
 			<select class="rc-location rc-location--country" name="country">
 				<option selected="selected" disabled="disabled" value="0">{{country}}</option>
 				{{#each countries}}
-					<option value="{{value}}">{{name}}</option>
+					<option value="{{id}}">{{name}}</option>
 				{{/each}}
 			</select>
 			<select class="rc-location rc-location--city" name="city">
@@ -27,13 +27,14 @@
 			</select>
 		</div>
 		<div class="rc-form-group rc-date rc-date--pickup">
-			<label for="rc-datepicker--pickup">{{pickupDate}}</label>
+			<label>{{pickUpDate}}</label>
 			<input spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
 			<input type="hidden" name="puDay">
 			<input type="hidden" name="puMonth">
 			<input type="hidden" name="puYear">
 		</div>
 		<div class="rc-form-group rc-time rc-time--pickup">
+			<label>{{time}}</label>
 			<select class="rc-hour" name="puHour">
 				<option value="00">00</option>
 				<option value="01">01</option>
@@ -68,13 +69,14 @@
 			</select>
 		</div>
 		<div class="rc-form-group rc-date rc-date--dropoff">
-			<label for="rc-datepicker--dropoff">{{dropoffDate}}</label>
+			<label>{{dropOffDate}}</label>
 			<input spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
 			<input type="hidden" name="doDay">
 			<input type="hidden" name="doMonth">
 			<input type="hidden" name="doYear">
 		</div>
 		<div class="rc-form-group rc-time rc-time--pickup">
+			<label>{{time}}</label>
 			<select class="rc-hour" name="doHour">
 				<option value="00">00</option>
 				<option value="01">01</option>
@@ -109,7 +111,7 @@
 			</select>
 		</div>
 		<div class="rc-form-group rc-submit">
-			<button class="rc-submit__button">{{submit}}</button>
+			<button class="rc-submit__button">{{search}}</button>
 		</div>
 	</form>
 </div>

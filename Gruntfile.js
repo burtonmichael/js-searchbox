@@ -52,7 +52,7 @@ module.exports = function(grunt) {
         },
         watch: {
             build: {
-                files: ['src/**/*.js'],
+                files: ['src/**/*.js', 'src/**/*.scss', 'src/**/*.hbs'],
                 tasks: ['watcher'],
                 options: {
                     spawn: false,
@@ -73,5 +73,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
 
     grunt.registerTask('default', ['clean', 'handlebars', 'requirejs', 'sass', 'watch'])
-    grunt.registerTask('watcher', ['clean', 'requirejs'])
+    grunt.registerTask('watcher', ['clean', 'handlebars', 'requirejs', 'sass'])
 }
