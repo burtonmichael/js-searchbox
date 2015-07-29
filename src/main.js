@@ -1,43 +1,60 @@
-require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, moment, Pikaday, template, cssLoader) {
-
-	var rcApp = window.rcApp || {}
+require(['jquery', 'moment', 'pikaday', 'template'], function(jq, moment, Pikaday, template) {
 
 	jq.noConflict( true );
 
-	function setHiddenDateFields(date, fieldset) {
-		var rcEle = rcAppForm.elements;
-		jq(rcEle[fieldset + 'Day']).val(date.date());
-		jq(rcEle[fieldset + 'Month']).val(date.month() + 1);
-		jq(rcEle[fieldset + 'Year']).val(date.year());
-	}
+	var app = window.rcApp || {}
 
 	var defaults = {
 		preflang: 'en',
 		containerId: 'app'
 	}
 
-	rcApp = jq.extend(true, {}, defaults, rcApp.options);
+	app = jq.extend(true, {}, defaults, app.options);
 
-	switch(typeof rcApp.css) {
+	app.getLocations = function(parameters, callback) {
+		jq.getJSON('http://www.rentalcars.com/InPathAjaxAction.do', parameters, function(data) {
+			callback(data);
+		});
+	}
+
+	app.localeChanged = function(event) {
+		var level = event.name;
+		var selected = e.options[e.selectedIndex].value;
+	}
+
+	app.setHiddenDateFields = function(date, fieldset) {
+		jq(app.form[fieldset + 'Day']).val(date.date());
+		jq(app.form[fieldset + 'Month']).val(date.month() + 1);
+		jq(app.form[fieldset + 'Year']).val(date.year());
+	}
+
+	app.cssLoader = function(url) {
+        var css = document.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = url;
+
+        document.head.appendChild(css);
+    };
+
+	switch(typeof app.css) {
 		case "undefined":
-			cssLoader.link('src/css/base.css')
+			app.cssLoader('src/css/base.css')
 			break;
 		case "string":
-			cssLoader.link(rcApp.css)
+			app.cssLoader(app.css)
 			break;
 		default:
 			break;
 	}
 
-	jq.getJSON('/stand-alone-locale/translations/' + rcApp.preflang + '.json', function(data) {
+	jq.getJSON('/stand-alone-locale/translations/' + app.preflang + '.json', function(data) {
 
-		var $container = jq('#' + rcApp.containerId);
+		jq('#' + app.containerId).html(template(data));
 
-		$container.html(template(data));
+		app.form = rcAppForm;
 
-		moment.defineLocale("preflang", data.moment);
-
-		moment.locale("preflang");
+		moment.defineLocale("app", data.moment);
+		moment.locale("app");
 
         var i18n = {
             previousMonth: data.previousMonth,
@@ -53,10 +70,10 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 		var endDate = moment();
 		endDate.add(3, 'days');
 
-		setHiddenDateFields(startDate, 'pu');
-		setHiddenDateFields(endDate, 'do');
+		app.setHiddenDateFields(startDate, 'pu');
+		app.setHiddenDateFields(endDate, 'do');
 
-		var pickupDate = new Pikaday({
+		app.pickupDate = new Pikaday({
 			defaultDate: startDate.toDate(),
 			minDate: startDate.toDate(),
 			setDefaultDate: true,
@@ -66,16 +83,16 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 		    theme: 'rc-app',
 		    onSelect: function(date) {
 		    	var dateMoment = this.getMoment();
-		    	dropoffDate.setMinDate(date);
-		    	if (dateMoment > dropoffDate.getMoment()) {
-		    		dropoffDate.setMoment(dateMoment);
-		    		setHiddenDateFields(dateMoment, 'do')
+		    	app.dropoffDate.setMinDate(date);
+		    	if (dateMoment > app.dropoffDate.getMoment()) {
+		    		app.dropoffDate.setMoment(dateMoment);
+		    		app.setHiddenDateFields(dateMoment, 'do')
 		    	}
-		    	setHiddenDateFields(dateMoment, 'pu')
+		    	app.setHiddenDateFields(dateMoment, 'pu')
 		    }
 		});
 
-		var dropoffDate = new Pikaday({
+		app.dropoffDate = new Pikaday({
 			defaultDate: endDate.toDate(),
 			minDate: startDate.toDate(),
 			setDefaultDate: true,
@@ -84,9 +101,11 @@ require(['jquery', 'moment', 'pikaday', 'template', 'cssLoader'], function(jq, m
 		    i18n: i18n,
 		    theme: 'rc-app',
 		    onSelect: function(date) {
-		    	setHiddenDateFields(this.getMoment(), 'do')
+		    	app.setHiddenDateFields(this.getMoment(), 'do')
 		    }
 		});
+
+		window.rcApp = app
 	});
 
 });

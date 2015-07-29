@@ -2,33 +2,33 @@
 	<form name="rcAppForm" action="http://www.rentalcars.com" target="_blank">
 		<h3 class="rc-title">{{title}}</h3>
 		<div class="rc-form-group rc-locations rc-locations--pickup">
-			<select class="rc-location rc-location--country" name="country">
+			<select class="rc-location rc-location--country" name="country" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{country}}</option>
 				{{#each countries}}
 					<option value="{{id}}">{{name}}</option>
 				{{/each}}
 			</select>
-			<select class="rc-location rc-location--city" name="city">
+			<select disabled="disabled" class="rc-location rc-location--city" name="city" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{city}}</option>
 			</select>
-			<select class="rc-location rc-location--location" name="location">
+			<select disabled="disabled" class="rc-location rc-location--location" name="location" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{location}}</option>
 			</select>
 		</div>
 		<div class="rc-form-group rc-locations rc-locations--dropoff">
-			<select class="rc-location rc-location--country" name="country">
+			<select disabled="disabled" class="rc-location rc-location--country" name="dropCountry" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{country}}</option>
 			</select>
-			<select class="rc-location rc-location--city" name="city">
+			<select disabled="disabled" class="rc-location rc-location--city" name="dropCity" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{city}}</option>
 			</select>
-			<select class="rc-location rc-location--location" name="location">
+			<select disabled="disabled" class="rc-location rc-location--location" name="dropLocation" onchange="rcApp.localeChanged(this)">
 				<option selected="selected" disabled="disabled" value="0">{{location}}</option>
 			</select>
 		</div>
 		<div class="rc-form-group rc-date rc-date--pickup">
 			<label>{{pickUpDate}}</label>
-			<input spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
+			<input readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
 			<input type="hidden" name="puDay">
 			<input type="hidden" name="puMonth">
 			<input type="hidden" name="puYear">
@@ -70,7 +70,7 @@
 		</div>
 		<div class="rc-form-group rc-date rc-date--dropoff">
 			<label>{{dropOffDate}}</label>
-			<input spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
+			<input readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
 			<input type="hidden" name="doDay">
 			<input type="hidden" name="doMonth">
 			<input type="hidden" name="doYear">
@@ -111,7 +111,7 @@
 			</select>
 		</div>
 		<div class="rc-form-group rc-submit">
-			<button class="rc-submit__button">{{search}}</button>
+			<button>{{search}}</button>
 		</div>
 	</form>
 </div>
