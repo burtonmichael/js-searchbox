@@ -1,31 +1,143 @@
-require(['jquery', 'moment', 'pikaday', 'template'], function(jq, moment, Pikaday, template) {
-
-	jq.noConflict( true );
+require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
 	var app = window.rcApp || {}
 
-	var defaults = {
-		preflang: 'en',
-		containerId: 'app'
+	app.extend = function(defaults, options) {
+	    var extended = {};
+	    var prop;
+	    for (prop in defaults) {
+	        if (Object.prototype.hasOwnProperty.call(defaults, prop)) {
+	            extended[prop] = defaults[prop];
+	        }
+	    }
+	    for (prop in options) {
+	        if (Object.prototype.hasOwnProperty.call(options, prop)) {
+	            extended[prop] = options[prop];
+	        }
+	    }
+	    return extended;
+	};
+
+	app.getJSON = function(url, params, callback) {
+
+		if (params) {
+			var queryStr = '?';
+
+			for(var prop in params) {
+				queryStr += prop + '=' + decodeURIComponent(params[prop]) + '&';
+			}
+
+			url += queryStr;
+		}
+
+		var request = new XMLHttpRequest();
+		request.open('GET', url, true);
+
+		request.onreadystatechange = function() {
+		  if (this.readyState === 4) {
+		    if (this.status >= 200 && this.status < 400) {
+		      // Success!
+		      var data = JSON.parse(this.responseText);
+		      callback(data);
+		    } else {
+		      // Error :(
+		      console.log('getJSON error')
+		    }
+		  }
+		};
+
+		request.send();
+		request = null;
 	}
 
-	app = jq.extend(true, {}, defaults, app.options);
-
-	app.getLocations = function(parameters, callback) {
-		jq.getJSON('http://www.rentalcars.com/InPathAjaxAction.do', parameters, function(data) {
-			callback(data);
+	app.getLocations = function(callback) {
+		app.getJSON('http://www.rentalcars.com/InPathAjaxAction.do', app.search, function(data) {
+			app[callback](data);
 		});
 	}
 
 	app.localeChanged = function(event) {
-		var level = event.name;
-		var selected = e.options[e.selectedIndex].value;
+		var locale = event.name;
+
+		var callback;
+
+		switch(locale) {
+			case 'country':
+				app.clear('country');
+				callback = 'countryChanged';
+				app.search.country = event.options[event.selectedIndex].value;
+				delete app.search.city;
+				break;
+			case 'city':
+				app.clear('city');
+				callback = 'cityChanged';
+				app.search.city = event.options[event.selectedIndex].value;
+				break;
+		}
+
+		app.getLocations(callback);
+	}
+
+	app.clear = function(locale) {
+		switch(locale) {
+			case 'country':
+				app.clearField(app.form.city);
+			case 'city':
+				app.clearField(app.form.location);
+		}
+	}
+
+	app.clearField = function(elem) {
+		elem.disabled = true;
+		elem.options.length = 0;
+
+	    var opt = document.createElement('option');
+	    opt.innerHTML = app.messages.emptySelect;
+	    opt.value = 0;
+	    opt.disabled = true;
+	    elem.appendChild(opt);
+	}
+
+	app.countryChanged = function(data) {
+		app.fillSelect(app.form.city, data.cityList);
+		if (data.cityList.length === 1) {
+			app.form.city.selectedIndex = 1;
+			app.search.city = data.cityList[0].id;
+			app.getLocations('cityChanged');
+		}
+	}
+
+	app.cityChanged = function(data) {
+		app.fillSelect(app.form.location, data.locationList);
+		if (data.locationList.length === 1) {
+			app.form.location.selectedIndex = 1;
+			app.search.location = data.locationList[0].id;
+			app.locationChanged()
+		}
+	}
+
+	app.locationChanged = function() {
+		console.log('Location Changed')
+	}
+
+	app.fillSelect = function(elem, array) {
+		var fragment = document.createDocumentFragment();
+
+		for(var i = 0; i < array.length; i++) {
+		    var opt = document.createElement('option');
+		    opt.innerHTML = array[i].name;
+		    opt.value = array[i].id;
+		    fragment.appendChild(opt);
+		}
+
+		elem.appendChild(fragment);
+	    elem.disabled = false;
 	}
 
 	app.setHiddenDateFields = function(date, fieldset) {
-		jq(app.form[fieldset + 'Day']).val(date.date());
-		jq(app.form[fieldset + 'Month']).val(date.month() + 1);
-		jq(app.form[fieldset + 'Year']).val(date.year());
+		app.form[fieldset + 'Day'].value = date.date();
+		app.form[fieldset + 'Month'].value = date.month() + 1;
+		app.form[fieldset + 'Year'].value = date.year();
 	}
 
 	app.cssLoader = function(url) {
@@ -35,6 +147,17 @@ require(['jquery', 'moment', 'pikaday', 'template'], function(jq, moment, Pikada
 
         document.head.appendChild(css);
     };
+
+	var defaults = {
+		preflang: 'en',
+		containerId: 'app'
+	}
+
+	app.options = app.extend(defaults, app.options);
+
+	app.search = {
+		preflang: app.options.preflang
+	}
 
 	switch(typeof app.css) {
 		case "undefined":
@@ -47,9 +170,11 @@ require(['jquery', 'moment', 'pikaday', 'template'], function(jq, moment, Pikada
 			break;
 	}
 
-	jq.getJSON('/stand-alone-locale/translations/' + app.preflang + '.json', function(data) {
+	app.getJSON('/stand-alone-locale/translations/' + app.options.preflang + '.json', false, function(data) {
 
-		jq('#' + app.containerId).html(template(data));
+		app.messages = data;
+
+		document.getElementById(app.options.containerId).innerHTML = template(data);
 
 		app.form = rcAppForm;
 

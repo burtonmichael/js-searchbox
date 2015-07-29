@@ -1,29 +1,29 @@
 <div class="rc-app">
-	<form name="rcAppForm" action="http://www.rentalcars.com" target="_blank">
+	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" target="_blank">
 		<h3 class="rc-title">{{title}}</h3>
 		<div class="rc-form-group rc-locations rc-locations--pickup">
 			<select class="rc-location rc-location--country" name="country" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{country}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 				{{#each countries}}
 					<option value="{{id}}">{{name}}</option>
 				{{/each}}
 			</select>
 			<select disabled="disabled" class="rc-location rc-location--city" name="city" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{city}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 			</select>
 			<select disabled="disabled" class="rc-location rc-location--location" name="location" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{location}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 			</select>
 		</div>
 		<div class="rc-form-group rc-locations rc-locations--dropoff">
 			<select disabled="disabled" class="rc-location rc-location--country" name="dropCountry" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{country}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 			</select>
 			<select disabled="disabled" class="rc-location rc-location--city" name="dropCity" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{city}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 			</select>
 			<select disabled="disabled" class="rc-location rc-location--location" name="dropLocation" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{location}}</option>
+				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 			</select>
 		</div>
 		<div class="rc-form-group rc-date rc-date--pickup">
