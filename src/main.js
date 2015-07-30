@@ -22,11 +22,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
 		if (params) {
 			var queryStr = '?';
-
 			for(var prop in params) {
 				queryStr += prop + '=' + decodeURIComponent(params[prop]) + '&';
 			}
-
 			url += queryStr;
 		}
 
@@ -36,11 +34,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		request.onreadystatechange = function() {
 		  if (this.readyState === 4) {
 		    if (this.status >= 200 && this.status < 400) {
-		      // Success!
 		      var data = JSON.parse(this.responseText);
 		      callback(data);
 		    } else {
-		      // Error :(
 		      console.log('getJSON error')
 		    }
 		  }
@@ -63,19 +59,25 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
 		switch(locale) {
 			case 'country':
-				app.clear('country');
-				callback = 'countryChanged';
+			case 'dropCountry':
+				app.clear(locale);
+				callback = locale + 'Changed';
 				app.search.country = event.options[event.selectedIndex].value;
 				delete app.search.city;
 				break;
 			case 'city':
-				app.clear('city');
-				callback = 'cityChanged';
+			case 'dropCity':
+				app.clear(locale);
+				callback = locale + 'Changed';
 				app.search.city = event.options[event.selectedIndex].value;
+				break;
+			case 'location':
+				app.clear('location');
+				callback = 'locationChanged';
 				break;
 		}
 
-		app.getLocations(callback);
+		if (callback) app.getLocations(callback);
 	}
 
 	app.clear = function(locale) {
@@ -84,6 +86,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 				app.clearField(app.form.city);
 			case 'city':
 				app.clearField(app.form.location);
+			case 'location':
+				app.clearField(app.form.dropCountry);
+			case 'dropCountry':
+				app.clearField(app.form.dropCity);
+			case 'dropCity':
+				app.clearField(app.form.dropLocation);
+			default:
+				break;
 		}
 	}
 
@@ -117,7 +127,43 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 	}
 
 	app.locationChanged = function() {
-		console.log('Location Changed')
+		app.form.dropCountry.innerHTML = app.form.country.innerHTML;
+		app.form.dropCountry.selectedIndex = app.form.country.selectedIndex;
+
+		app.form.dropCity.innerHTML = app.form.city.innerHTML;
+		app.form.dropCity.selectedIndex = app.form.city.selectedIndex;
+
+		app.form.dropLocation.innerHTML = app.form.location.innerHTML;
+		app.form.dropLocation.selectedIndex = app.form.location.selectedIndex;
+
+		app.form.dropCountry.disabled = false;
+		app.form.dropCity.disabled = false;
+		app.form.dropLocation.disabled = false;
+
+		app.form.locationName.value = app.form.location.options[app.form.location.selectedIndex].innerHTML;
+		app.form.dropLocationName.value = app.form.dropLocation.options[app.form.dropLocation.selectedIndex].innerHTML;
+	}
+
+	app.dropCountryChanged = function(data) {
+		app.fillSelect(app.form.dropCity, data.cityList);
+		if (data.cityList.length === 1) {
+			app.form.dropCity.selectedIndex = 1;
+			app.search.city = data.cityList[0].id;
+			app.getLocations('cityChanged');
+		}
+	}
+
+	app.dropCityChanged = function(data) {
+		app.fillSelect(app.form.dropLocation, data.locationList);
+		if (data.locationList.length === 1) {
+			app.form.dropLocation.selectedIndex = 1;
+			app.search.dropLocation = data.locationList[0].id;
+			app.dropLocationChanged();
+		}
+	}
+
+	app.dropLocationChanged = function() {
+		app.form.dropLocationName.value = app.form.dropLocationName.options[app.form.dropLocationName.selectedIndex].innerHTML;
 	}
 
 	app.fillSelect = function(elem, array) {
@@ -134,10 +180,42 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 	    elem.disabled = false;
 	}
 
+	app.returnChanged = function(elem) {
+		if (elem.checked) {
+			app.removeClass(document.getElementById('rc-dropoff'), 'is-visible')
+		} else {
+			app.addClass(document.getElementById('rc-dropoff'), 'is-visible')
+		}
+	}
+
 	app.setHiddenDateFields = function(date, fieldset) {
 		app.form[fieldset + 'Day'].value = date.date();
 		app.form[fieldset + 'Month'].value = date.month() + 1;
 		app.form[fieldset + 'Year'].value = date.year();
+	}
+
+	app.hasClass = function(elem, className) {
+		if (elem.classList) {
+			elem.classList.contains(className);
+		} else {
+			new RegExp('(^| )' + className + '( |$)', 'gi').test(elem.className);
+		}
+	}
+
+	app.addClass = function(elem, className) {
+		if (elem.classList) {
+		  elem.classList.add(className);
+		} else {
+		  elem.className += ' ' + className;
+		}
+	}
+
+	app.removeClass = function(elem, className) {
+		if (elem.classList) {
+			elem.classList.remove(className);
+		} else {
+			elem.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+		}
 	}
 
 	app.cssLoader = function(url) {
@@ -156,6 +234,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 	app.options = app.extend(defaults, app.options);
 
 	app.search = {
+		affiliateCode: app.options.affiliateCode,
 		preflang: app.options.preflang
 	}
 
@@ -177,6 +256,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		document.getElementById(app.options.containerId).innerHTML = template(data);
 
 		app.form = rcAppForm;
+		app.form.affiliateCode.value = app.options.affiliateCode;
+
+		if (app.options.affUrl) app.form.action = 'http://' + app.options.affUrl + '/LoadingSearchResults.do';
 
 		moment.defineLocale("app", data.moment);
 		moment.locale("app");
@@ -191,9 +273,10 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         };
 
 		var startDate = moment();
+		startDate.add(3, 'days');
 
 		var endDate = moment();
-		endDate.add(3, 'days');
+		endDate.add(6, 'days');
 
 		app.setHiddenDateFields(startDate, 'pu');
 		app.setHiddenDateFields(endDate, 'do');
@@ -205,7 +288,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		    field: document.getElementById('rc-datepicker--pickup'),
 		    format: 'L',
 		    i18n: i18n,
-		    theme: 'rc-app',
+		    theme: 'rc-app-reset',
 		    onSelect: function(date) {
 		    	var dateMoment = this.getMoment();
 		    	app.dropoffDate.setMinDate(date);
@@ -224,13 +307,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		    field: document.getElementById('rc-datepicker--dropoff'),
 		    format: 'L',
 		    i18n: i18n,
-		    theme: 'rc-app',
+		    theme: 'rc-app-reset',
 		    onSelect: function(date) {
 		    	app.setHiddenDateFields(this.getMoment(), 'do')
 		    }
 		});
 
-		window.rcApp = app
+		window.rcApp = app;
+
 	});
 
 });

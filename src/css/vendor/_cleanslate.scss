@@ -1,10 +1,10 @@
-.rc-app {
+.rc-app-reset {
     font-size: medium !important;
     line-height: 1 !important;
     direction:ltr !important;
     text-align: left !important; /* for IE, Opera */
     text-align: start !important; /* recommended W3C Spec */
-    font-family: "Times New Roman", Times, serif !important; /* Override this with whatever font-family is required */
+    font-family: Arial, Helvetica, sans-serif !important; /* Override this with whatever font-family is required */
     color: black !important;
     font-style:normal !important;
     font-weight:normal !important;
@@ -92,9 +92,6 @@
                 border-radius: 0 !important;
         -webkit-box-shadow: none !important;
                 box-shadow: none !important;
-        -webkit-box-sizing: content-box !important;
-           -moz-box-sizing: content-box !important;
-                box-sizing: content-box !important;
         -webkit-column-count: auto !important;
            -moz-column-count: auto !important;
                 column-count: auto !important;

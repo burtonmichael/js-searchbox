@@ -1,117 +1,152 @@
-<div class="rc-app">
+<div id="rc-app" class="rc-app-reset">
 	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" target="_blank">
-		<h3 class="rc-title">{{title}}</h3>
-		<div class="rc-form-group rc-locations rc-locations--pickup">
-			<select class="rc-location rc-location--country" name="country" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-				{{#each countries}}
-					<option value="{{id}}">{{name}}</option>
-				{{/each}}
-			</select>
-			<select disabled="disabled" class="rc-location rc-location--city" name="city" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-			</select>
-			<select disabled="disabled" class="rc-location rc-location--location" name="location" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-			</select>
+		<input type="hidden" name="affiliateCode">
+		<input type="hidden" name="puSameAsDo" value="false">
+		<input type="hidden" name="emptySearchResults" value="true">
+		<input type="hidden" name="locationName">
+		<input type="hidden" name="dropLocationName">
+		<h3>{{title}}</h3>
+		<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--pickup">
+			<div class="rc-form-group rc-form-group--country">
+				<label>{{country}}</label>
+				<select class="rc-form-control rc-form-control--country" name="country" onchange="rcApp.localeChanged(this)">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+					{{#each countries}}
+						<option value="{{id}}">{{name}}</option>
+					{{/each}}
+				</select>
+			</div>
+			<div class="rc-form-group rc-form-group--city">
+				<label>{{city}}</label>
+				<select disabled="disabled" class="rc-form-control rc-form-control--city" name="city" onchange="rcApp.localeChanged(this)">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+				</select>
+			</div>
+			<div class="rc-form-group rc-form-group--location">
+				<label>{{location}}</label>
+				<select disabled="disabled" class="rc-form-control rc-form-control--location" name="location" onchange="rcApp.localeChanged(this)">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+				</select>
+			</div>
 		</div>
-		<div class="rc-form-group rc-locations rc-locations--dropoff">
-			<select disabled="disabled" class="rc-location rc-location--country" name="dropCountry" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-			</select>
-			<select disabled="disabled" class="rc-location rc-location--city" name="dropCity" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-			</select>
-			<select disabled="disabled" class="rc-location rc-location--location" name="dropLocation" onchange="rcApp.localeChanged(this)">
-				<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-			</select>
+		<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--dropoff" id="rc-dropoff">
+			<h4>{{dropOff}}</h4>
+			<div class="rc-form-group rc-form-group--drop-country">
+				<label>{{country}}</label>
+				<select disabled="disabled" class="rc-form-control rc-form-control--country" name="dropCountry" onchange="rcApp.localeChanged(this)">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+				</select>
+			</div>
+			<div class="rc-form-group rc-form-group--drop-country">
+				<label>{{city}}</label>
+				<select disabled="disabled" class="rc-form-control rc-form-control--city" name="dropCity" onchange="rcApp.localeChanged(this)">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+				</select>
+			</div>
+			<div class="rc-form-group rc-form-group--drop-country">
+				<label>{{location}}</label>
+				<select disabled="disabled" class="rc-form-control rc-form-control--location" name="dropLocation" onchange="rcApp.dropLocationChanged()">
+					<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+				</select>
+			</div>
 		</div>
-		<div class="rc-form-group rc-date rc-date--pickup">
+		<div class="rc-form-group rc-form-group--return">
+			<label><input type="checkbox" checked="checked" onchange="rcApp.returnChanged(this)">{{returnSameLocation}}</label>
+		</div>
+		<div class="rc-form-group rc-form-group--date rc-date--pickup">
 			<label>{{pickUpDate}}</label>
-			<input readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
+			<input class="rc-form-control rc-form-control--date" readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
 			<input type="hidden" name="puDay">
 			<input type="hidden" name="puMonth">
 			<input type="hidden" name="puYear">
 		</div>
-		<div class="rc-form-group rc-time rc-time--pickup">
+		<div class="rc-form-group rc-form-group--time rc-time--pickup">
 			<label>{{time}}</label>
-			<select class="rc-hour" name="puHour">
-				<option value="00">00</option>
-				<option value="01">01</option>
-				<option value="02">02</option>
-				<option value="03">03</option>
-				<option value="04">04</option>
-				<option value="05">05</option>
-				<option value="06">06</option>
-				<option value="07">07</option>
-				<option value="08">08</option>
-				<option value="09">09</option>
-				<option value="10" selected="selected">10</option>
-				<option value="11">11</option>
-				<option value="12">12</option>
-				<option value="13">13</option>
-				<option value="14">14</option>
-				<option value="15">15</option>
-				<option value="16">16</option>
-				<option value="17">17</option>
-				<option value="18">18</option>
-				<option value="19">19</option>
-				<option value="20">20</option>
-				<option value="21">21</option>
-				<option value="22">22</option>
-				<option value="23">23</option>
-			</select>
-			<select class="rc-minute" name="puMinute">
-				<option value="00">00</option>
-				<option value="15">15</option>
-				<option value="30" selected="selected">30</option>
-				<option value="45">45</option>
-			</select>
+			<div class="rc-form-control-wrap rc-form-control-wrap--time">
+				<select class="rc-form-control rc-form-control--hour" name="puHour">
+					<option value="00">00</option>
+					<option value="01">01</option>
+					<option value="02">02</option>
+					<option value="03">03</option>
+					<option value="04">04</option>
+					<option value="05">05</option>
+					<option value="06">06</option>
+					<option value="07">07</option>
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10" selected="selected">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+				</select>
+				<select class="rc-form-control rc-form-control--minute" name="puMinute">
+					<option value="00">00</option>
+					<option value="15">15</option>
+					<option value="30" selected="selected">30</option>
+					<option value="45">45</option>
+				</select>
+			</div>
 		</div>
-		<div class="rc-form-group rc-date rc-date--dropoff">
+		<div class="rc-form-group rc-form-group--date rc-date--dropoff">
 			<label>{{dropOffDate}}</label>
-			<input readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
+			<input class="rc-form-control rc-form-control--date" readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
 			<input type="hidden" name="doDay">
 			<input type="hidden" name="doMonth">
 			<input type="hidden" name="doYear">
 		</div>
-		<div class="rc-form-group rc-time rc-time--pickup">
+		<div class="rc-form-group rc-form-group--time rc-time--pickup">
 			<label>{{time}}</label>
-			<select class="rc-hour" name="doHour">
-				<option value="00">00</option>
-				<option value="01">01</option>
-				<option value="02">02</option>
-				<option value="03">03</option>
-				<option value="04">04</option>
-				<option value="05">05</option>
-				<option value="06">06</option>
-				<option value="07">07</option>
-				<option value="08">08</option>
-				<option value="09">09</option>
-				<option value="10" selected="selected">10</option>
-				<option value="11">11</option>
-				<option value="12">12</option>
-				<option value="13">13</option>
-				<option value="14">14</option>
-				<option value="15">15</option>
-				<option value="16">16</option>
-				<option value="17">17</option>
-				<option value="18">18</option>
-				<option value="19">19</option>
-				<option value="20">20</option>
-				<option value="21">21</option>
-				<option value="22">22</option>
-				<option value="23">23</option>
-			</select>
-			<select class="rc-minute" name="doMinute">
-				<option value="00">00</option>
-				<option value="15">15</option>
-				<option value="30" selected="selected">30</option>
-				<option value="45">45</option>
-			</select>
+			<div class="rc-form-control-wrap rc-form-control-wrap--time">
+				<select class="rc-form-control rc-form-control--hour" name="doHour">
+					<option value="00">00</option>
+					<option value="01">01</option>
+					<option value="02">02</option>
+					<option value="03">03</option>
+					<option value="04">04</option>
+					<option value="05">05</option>
+					<option value="06">06</option>
+					<option value="07">07</option>
+					<option value="08">08</option>
+					<option value="09">09</option>
+					<option value="10" selected="selected">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+				</select>
+				<select class="rc-form-control rc-form-control--minute" name="doMinute">
+					<option value="00">00</option>
+					<option value="15">15</option>
+					<option value="30" selected="selected">30</option>
+					<option value="45">45</option>
+				</select>
+			</div>
 		</div>
-		<div class="rc-form-group rc-submit">
-			<button>{{search}}</button>
+		<div class="rc-form-group rc-form-group--age">
+			<label>{{driverAge}}</label>
+			<input class="rc-form-control rc-form-control--age" value="25" type="text" name="driversAge">
+		</div>
+		<div class="rc-form-group rc-form-group--submit">
+			<button class="rc-button">{{search}}</button>
 		</div>
 	</form>
 </div>
