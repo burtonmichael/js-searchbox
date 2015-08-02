@@ -283,7 +283,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
 		app.pickupDate = new Pikaday({
 			defaultDate: startDate.toDate(),
-			minDate: startDate.toDate(),
+			minDate: new Date(),
 			setDefaultDate: true,
 		    field: document.getElementById('rc-datepicker--pickup'),
 		    format: 'L',
