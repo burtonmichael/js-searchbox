@@ -31,12 +31,10 @@ module.exports = function(grunt) {
                     include: "main",
                     wrap: true,
                     paths: {
-                        "jquery": "js/jquery/jquery.min",
                         'moment': 'libs/moment/min/moment.min',
                         'handlebars.runtime': 'libs/handlebars/handlebars.runtime.amd.min',
                         'pikaday': 'libs/pikaday/pikaday',
-                        'template': 'templates/compiled/app.tpl',
-                        'cssLoader': 'js/cssLoader'
+                        'template': 'templates/compiled/app.tpl'
                     },
                     shim: {
                         'pikaday': {

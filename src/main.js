@@ -28,10 +28,18 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 			url += queryStr;
 		}
 
-		var request = new XMLHttpRequest();
-		request.open('GET', url, true);
+		var xhr = new XMLHttpRequest();
 
-		request.onreadystatechange = function() {
+		if ("withCredentials" in xhr) {
+			xhr.open('GET', url, true);
+		} else if (typeof XDomainRequest != "undefined") {
+			xhr = new XDomainRequest();
+			xhr.open('GET', url);
+		} else {
+			xhr = null;
+		}
+
+		xhr.onreadystatechange = function() {
 		  if (this.readyState === 4) {
 		    if (this.status >= 200 && this.status < 400) {
 		      var data = JSON.parse(this.responseText);
@@ -42,8 +50,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		  }
 		};
 
-		request.send();
-		request = null;
+		xhr.send();
+		xhr = null;
 	}
 
 	app.getLocations = function(callback) {
@@ -226,30 +234,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         document.head.appendChild(css);
     };
 
-	var defaults = {
-		preflang: 'en',
-		containerId: 'app'
-	}
 
-	app.options = app.extend(defaults, app.options);
-
-	app.search = {
-		affiliateCode: app.options.affiliateCode,
-		preflang: app.options.preflang
-	}
-
-	switch(typeof app.css) {
-		case "undefined":
-			app.cssLoader('src/css/base.css')
-			break;
-		case "string":
-			app.cssLoader(app.css)
-			break;
-		default:
-			break;
-	}
-
-	app.getJSON('/stand-alone-locale/translations/' + app.options.preflang + '.json', false, function(data) {
+	rcApp.init = function(data) {
 
 		app.messages = data;
 
@@ -283,12 +269,13 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
 		app.pickupDate = new Pikaday({
 			defaultDate: startDate.toDate(),
-			minDate: startDate.toDate(),
+			minDate: new Date(),
 			setDefaultDate: true,
 		    field: document.getElementById('rc-datepicker--pickup'),
-		    format: 'L',
+		    format: app.options.calendarFormat,
 		    i18n: i18n,
-		    theme: 'rc-app-reset',
+		    numberOfMonths: app.options.calendarMonths || null,
+		    theme: 'rc-app rc-app-reset',
 		    onSelect: function(date) {
 		    	var dateMoment = this.getMoment();
 		    	app.dropoffDate.setMinDate(date);
@@ -305,16 +292,51 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 			minDate: startDate.toDate(),
 			setDefaultDate: true,
 		    field: document.getElementById('rc-datepicker--dropoff'),
-		    format: 'L',
+		    format: app.options.calendarFormat,
 		    i18n: i18n,
+		    numberOfMonths: app.options.calendarMonths || null,
 		    theme: 'rc-app-reset',
 		    onSelect: function(date) {
 		    	app.setHiddenDateFields(this.getMoment(), 'do')
 		    }
 		});
 
-		window.rcApp = app;
+		var rcScript = document.getElementById('rcAppScript');
+		rcScript.parentNode.removeChild(rcScript);
+	};
 
-	});
+	var defaults = {
+		preflang: 'en',
+		containerId: 'app',
+		calendarFormat: 'L',
+		calendarMonths: null
+	}
 
+	app.options = app.extend(defaults, app.options);
+
+	app.search = {
+		affiliateCode: app.options.affiliateCode,
+		preflang: app.options.preflang
+	}
+
+	switch(typeof app.css) {
+		case "undefined":
+			if (app.options.dev){
+				app.cssLoader('src/css/base.css')
+			} else {
+				app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base.css')
+			}
+			break;
+		case "string":
+			app.cssLoader(app.css)
+			break;
+		default:
+			break;
+	}
+
+	var script = document.createElement('script');
+	script.setAttribute('id', 'rcAppScript');
+	script.type = 'text/javascript';
+	script.src = 'http://www.rentalcars.com/partners/integrations/stand-alone-inline/data/' + app.options.preflang + '.js'
+	document.body.appendChild(script);
 });
