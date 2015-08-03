@@ -333,7 +333,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 		default:
 			break;
 	}
-
+	
 	var script = document.createElement('script');
 	script.setAttribute('id', 'rcAppScript');
 	script.type = 'text/javascript';
