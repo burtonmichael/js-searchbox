@@ -1,5 +1,5 @@
 <div id="rc-app" class="rc-app rc-app-reset">
-	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" target="_blank">
+	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" target="_blank" onSubmit="return rcApp.validateForm()">
 		<input type="hidden" name="affiliateCode">
 		<input type="hidden" name="puSameAsDo" value="false">
 		<input type="hidden" name="emptySearchResults" value="true">
@@ -143,10 +143,10 @@
 		</div>
 		<div class="rc-form-group rc-form-group--age">
 			<label>{{driverAge}}</label>
-			<input class="rc-form-control rc-form-control--age" value="25" type="text" name="driversAge">
+			<input class="rc-form-control rc-form-control--age" value="25" onkeypress="rcApp.validateNumber(event)" type="text" name="driversAge">
 		</div>
 		<div class="rc-form-group rc-form-group--submit">
-			<button class="rc-button">{{search}}</button>
+			<button  class="rc-button">{{search}}</button>
 		</div>
 	</form>
 </div>
