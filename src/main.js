@@ -19,16 +19,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     };
 
     app.validateNumber = function(event) {
-	    var key = window.event ? event.keyCode : event.which;
-
-	    if (event.keyCode == 8 || event.keyCode == 46
-	     || event.keyCode == 37 || event.keyCode == 39) {
-	        return true;
-	    }
-	    else if ( key < 48 || key > 57 ) {
-	        return false;
-	    }
-	    else return true;
+        var keypressed = event || window.event;
+        var key = keypressed.keyCode || keypressed.which;
+        key = String.fromCharCode(key);
+        var regex = /[0-9]/;
+        if (!regex.test(key)) {
+            keypressed.returnValue = false;
+            if (keypressed.preventDefault) keypressed.preventDefault();
+        }
     };
 
     app.validateForm = function() {
