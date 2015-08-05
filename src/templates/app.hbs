@@ -149,4 +149,13 @@
 			<button  class="rc-button">{{search}}</button>
 		</div>
 	</form>
+	<div id="rc-modal-overlay" onclick="rcApp.dismissModal()" class="rc-modal-overlay rc-modal-overlay--hidden">
+		<div class="rc-modal">
+			<div class="rc-modal-header">
+				<span>{{sorry}}</span>
+				<div onclick="rcApp.dismissModal()" class="rc-modal-close">×</div>
+			</div>
+			<div id="rc-modal-body" class="rc-modal-body"></div>
+		</div>
+	</div>
 </div>

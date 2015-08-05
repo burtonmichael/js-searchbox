@@ -32,11 +32,13 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     app.validateForm = function() {
     	var errors = [];
     	if (!parseInt(app.form.location.value)) {
-    		errors.push(app.messages.errorLocation + ' ' + app.messages.errorManditory)
-    	}
-    	if (!parseInt(app.form.dropLocation.value)) {
-    		errors.push(app.messages.errorDropLocation + ' ' + app.messages.errorManditory)
-    	}
+    		errors.push(app.messages.errorLocation + ' ' + app.messages.errorManditory);
+    	} else {
+            if (!parseInt(app.form.dropLocation.value)) {
+                errors.push(app.messages.errorDropLocation + ' ' + app.messages.errorManditory);
+            }
+        }
+
         var pickupDateTime = app.pickupDate.getMoment().hour(app.form.puHour.value).minute(app.form.puMinute.value);
 
         var dropoffDateTime = app.dropoffDate.getMoment().hour(app.form.doHour.value).minute(app.form.doMinute.value);
@@ -59,7 +61,19 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 	        } else {
 	            event.returnValue = false;
 	        }
-	        console.log(errors)
+            var body = document.getElementById('rc-modal-body');
+
+            while (body.firstChild) {
+                body.removeChild(body.firstChild);
+            }
+
+            for (var i = 0; i < errors.length; i++) {
+                var error = document.createElement("span");
+                error.innerHTML = errors[i];
+                body.appendChild(error);
+            };
+
+            app.showModal();
         }
     }
 
@@ -274,17 +288,33 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     app.cssLoader = function(url) {
         var css = document.createElement('link');
         css.rel = 'stylesheet';
-        css.href = url;
+        css.href = url + '.css';
 
         document.head.appendChild(css);
-    };
+    }
 
+    app.showModal = function() {
+        app.removeClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden")
+    }
+
+    app.dismissModal = function() {
+        app.addClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden")
+    }
 
     rcApp.init = function(data) {
 
         app.messages = data;
 
-        document.getElementById(app.options.containerId).innerHTML = template(data);
+        var container = document.getElementById(app.options.containerId);
+
+        if (container) {
+            container.innerHTML = template(data);
+        } else {
+            var scriptElem = document.getElementById("rcAppScript");
+            var containerElem = document.createElement("div");
+            containerElem.innerHTML = template(data);
+            scriptElem.parentNode.insertBefore(containerElem, scriptElem.nextSibling);
+        }
 
         app.form = rcAppForm;
         app.form.affiliateCode.value = app.options.affiliateCode;
@@ -340,13 +370,13 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             format: app.options.calendarFormat,
             i18n: i18n,
             numberOfMonths: app.options.calendarMonths || null,
-            theme: 'rc-app-reset',
+            theme: 'rc-app rc-app-reset',
             onSelect: function(date) {
                 app.setHiddenDateFields(this.getMoment(), 'do')
             }
         });
 
-        var rcScript = document.getElementById('rcAppScript');
+        var rcScript = document.getElementById('rcAppData');
         rcScript.parentNode.removeChild(rcScript);
     };
 
@@ -364,23 +394,30 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         preflang: app.options.preflang
     }
 
-    switch (typeof app.css) {
+    switch (typeof app.options.css) {
         case "undefined":
-            if (app.options.dev) {
-                app.cssLoader('src/css/base.css')
-            } else {
-                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base.css')
-            }
+            app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
             break;
         case "string":
-            app.cssLoader(app.css)
+            if (app.options.include) {
+                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
+            }
+            app.cssLoader(app.options.css)
             break;
-        default:
+        case "object":
+            if (app.options.include) {
+                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
+            }
+            for (var i = 0, n = app.options.css.length; i < n; i++) {
+                app.cssLoader(app.options.css[i]);
+            }
+            break;
+        case "boolean":
             break;
     }
 
     var script = document.createElement('script');
-    script.setAttribute('id', 'rcAppScript');
+    script.setAttribute('id', 'rcAppData');
     script.type = 'text/javascript';
     script.src = 'http://www.rentalcars.com/partners/integrations/stand-alone-inline/data/' + app.options.preflang + '.js'
     document.body.appendChild(script);
