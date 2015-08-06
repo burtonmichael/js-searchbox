@@ -1,6 +1,12 @@
 <div id="rc-app" class="rc-app rc-app-reset">
-	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" target="_blank" onSubmit="return rcApp.validateForm()">
+	<form name="rcAppForm" action="http://www.rentalcars.com/LoadingSearchResults.do" method="POST" target="_blank" onSubmit="return rcApp.validateForm()">
 		<input type="hidden" name="affiliateCode">
+		<input type="hidden" name="preflang">
+		<input type="hidden" name="prefcurrency">
+		<input type="hidden" name="adcamp">
+		<input type="hidden" name="adplat">
+		<input type="hidden" name="enabler">
+		<input type="hidden" name="cor">
 		<input type="hidden" name="puSameAsDo" value="false">
 		<input type="hidden" name="emptySearchResults" value="true">
 		<input type="hidden" name="locationName">

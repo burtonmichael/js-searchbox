@@ -1,24 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>Document</title>
+    <meta charset="UTF-8">
+    <title>Tester</title>
 </head>
+
 <body>
-	<!-- <div id="app"></div> -->
+    <!-- <div id="app"></div> -->
+    <script>
+    var rcApp = {
+        options: {
+            preflang: 'jp',
+            affiliateCode: 'easycar_rc',
+            // cor: 'gb',
+            // prefcurrency: 'USD',
+            // calendarFormat: 'L',
+            // calendarMonths: 2,
+            // containerId: 'app',
+            // affUrl: 'booking.easycar.com',
+            // adcamp: 'testcamp',
+            // adplat: 'testplat',
+            // enabler: 'test',
+            // css: ['root~/import/common/pikaday']
+        }
+    }
 
-	<script>
-		var rcApp = {
-			options: {
-				preflang: 'ar',
-				affiliateCode: 'wizzair',
-				include: true,
-				css: ['base~/import/common/pikaday']
-			}
-		}
-	</script>
-
-	<script id="rcAppScript" src="dist/app.js"></script>
-
+    // "root~" is a shorthand reference to "http://www.rentalcars.com/partners/integrations/stand-alone-inline"
+    </script>
+    <script id="rcAppScript" src="dist/app.js"></script>
 </body>
+
 </html>

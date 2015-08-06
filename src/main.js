@@ -327,7 +327,13 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         }
 
         app.form = document.rcAppForm;
-        app.form.affiliateCode.value = app.options.affiliateCode;
+        if (app.options.affiliateCode) app.form.affiliateCode.value = app.options.affiliateCode;
+        if (app.options.preflang) app.form.preflang.value = app.options.preflang;
+        if (app.options.prefcurrency) app.form.prefcurrency.value = app.options.prefcurrency;
+        if (app.options.adcamp) app.form.adcamp.value = app.options.adcamp;
+        if (app.options.adplat) app.form.adplat.value = app.options.adplat;
+        if (app.options.enabler) app.form.enabler.value = app.options.enabler;
+        if (app.options.cor) app.form.cor.value = app.options.cor;
 
         if (app.options.affUrl) app.form.action = 'http://' + app.options.affUrl + '/LoadingSearchResults.do';
 
@@ -410,29 +416,22 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
     switch (typeof app.options.css) {
         case "undefined":
-
-            app.cssLoader(app.baseUrl + '/css/base')
+            app.cssLoader(app.baseUrl + '/css/base');
             break;
         case "string":
-            if (app.options.include) {
-                app.cssLoader(app.baseUrl + '/css/base')
-            }
-            var sheet = app.options.css;
-            if (sheet.indexOf("base~") === 0) {
-                sheet = sheet.replace(/base~/, app.baseUrl)
+            var sheetStr = app.options.css;
+            if (sheetStr.indexOf("root~") === 0) {
+                sheetStr = sheetStr.replace(/root~/, app.baseUrl);
             }
             app.cssLoader(sheet);
             break;
         case "object":
-            if (app.options.include) {
-                app.cssLoader(app.baseUrl + '/css/base')
-            }
             for (var i = 0, n = app.options.css.length; i < n; i++) {
-                var sheet = app.options.css[i];
-                if (sheet.indexOf("base~") === 0) {
-                    sheet = sheet.replace(/base~/, app.baseUrl)
+                var sheetArr = app.options.css[i];
+                if (sheetArr.indexOf("root~") === 0) {
+                    sheetArr = sheetArr.replace(/root~/, app.baseUrl);
                 }
-                app.cssLoader(sheet);
+                app.cssLoader(sheetArr);
             }
             break;
         case "boolean":
