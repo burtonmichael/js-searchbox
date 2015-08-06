@@ -406,22 +406,33 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         preflang: app.options.preflang
     };
 
+    app.baseUrl = "http://www.rentalcars.com/partners/integrations/stand-alone-inline";
+
     switch (typeof app.options.css) {
         case "undefined":
-            app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
+
+            app.cssLoader(app.baseUrl + '/css/base')
             break;
         case "string":
             if (app.options.include) {
-                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
+                app.cssLoader(app.baseUrl + '/css/base')
             }
-            app.cssLoader(app.options.css);
+            var sheet = app.options.css;
+            if (sheet.indexOf("base~") === 0) {
+                sheet = sheet.replace(/base~/, app.baseUrl)
+            }
+            app.cssLoader(sheet);
             break;
         case "object":
             if (app.options.include) {
-                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
+                app.cssLoader(app.baseUrl + '/css/base')
             }
             for (var i = 0, n = app.options.css.length; i < n; i++) {
-                app.cssLoader(app.options.css[i]);
+                var sheet = app.options.css[i];
+                if (sheet.indexOf("base~") === 0) {
+                    sheet = sheet.replace(/base~/, app.baseUrl)
+                }
+                app.cssLoader(sheet);
             }
             break;
         case "boolean":
