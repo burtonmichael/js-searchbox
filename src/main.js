@@ -1,6 +1,6 @@
 require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
-    var app = window.rcApp || {}
+    var app = window.rcApp || {};
 
     app.extend = function(defaults, options) {
         var extended = {};
@@ -71,11 +71,11 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
                 var error = document.createElement("span");
                 error.innerHTML = errors[i];
                 body.appendChild(error);
-            };
+            }
 
             app.showModal();
         }
-    }
+    };
 
     app.getJSON = function(url, params, callback) {
 
@@ -104,20 +104,20 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
                     var data = JSON.parse(this.responseText);
                     callback(data);
                 } else {
-                    console.log('getJSON error')
+                    console.log('getJSON error');
                 }
             }
         };
 
         xhr.send();
         xhr = null;
-    }
+    };
 
     app.getLocations = function(callback) {
         app.getJSON('http://www.rentalcars.com/InPathAjaxAction.do', app.search, function(data) {
             app[callback](data);
         });
-    }
+    };
 
     app.localeChanged = function(event) {
         var locale = event.name;
@@ -145,24 +145,29 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         }
 
         if (callback) app.getLocations(callback);
-    }
+    };
 
     app.clear = function(locale) {
         switch (locale) {
             case 'country':
                 app.clearField(app.form.city);
+                /* falls through */
             case 'city':
                 app.clearField(app.form.location);
+                /* falls through */
             case 'location':
                 app.clearField(app.form.dropCountry);
+                /* falls through */
             case 'dropCountry':
                 app.clearField(app.form.dropCity);
+                /* falls through */
             case 'dropCity':
                 app.clearField(app.form.dropLocation);
+                /* falls through */
             default:
                 break;
         }
-    }
+    };
 
     app.clearField = function(elem) {
         elem.disabled = true;
@@ -173,7 +178,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         opt.value = 0;
         opt.disabled = true;
         elem.appendChild(opt);
-    }
+    };
 
     app.countryChanged = function(data) {
         app.fillSelect(app.form.city, data.cityList);
@@ -182,16 +187,16 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             app.search.city = data.cityList[0].id;
             app.getLocations('cityChanged');
         }
-    }
+    };
 
     app.cityChanged = function(data) {
         app.fillSelect(app.form.location, data.locationList);
         if (data.locationList.length === 1) {
             app.form.location.selectedIndex = 1;
             app.search.location = data.locationList[0].id;
-            app.locationChanged()
+            app.locationChanged();
         }
-    }
+    };
 
     app.locationChanged = function() {
         app.form.dropCountry.innerHTML = app.form.country.innerHTML;
@@ -209,7 +214,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
         app.form.locationName.value = app.form.location.options[app.form.location.selectedIndex].innerHTML;
         app.form.dropLocationName.value = app.form.dropLocation.options[app.form.dropLocation.selectedIndex].innerHTML;
-    }
+    };
 
     app.dropCountryChanged = function(data) {
         app.fillSelect(app.form.dropCity, data.cityList);
@@ -218,7 +223,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             app.search.city = data.cityList[0].id;
             app.getLocations('cityChanged');
         }
-    }
+    };
 
     app.dropCityChanged = function(data) {
         app.fillSelect(app.form.dropLocation, data.locationList);
@@ -227,11 +232,11 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             app.search.dropLocation = data.locationList[0].id;
             app.dropLocationChanged();
         }
-    }
+    };
 
     app.dropLocationChanged = function() {
         app.form.dropLocationName.value = app.form.dropLocationName.options[app.form.dropLocationName.selectedIndex].innerHTML;
-    }
+    };
 
     app.fillSelect = function(elem, array) {
         var fragment = document.createDocumentFragment();
@@ -245,21 +250,21 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
         elem.appendChild(fragment);
         elem.disabled = false;
-    }
+    };
 
     app.returnChanged = function(elem) {
         if (elem.checked) {
-            app.removeClass(document.getElementById('rc-dropoff'), 'is-visible')
+            app.removeClass(document.getElementById('rc-dropoff'), 'is-visible');
         } else {
-            app.addClass(document.getElementById('rc-dropoff'), 'is-visible')
+            app.addClass(document.getElementById('rc-dropoff'), 'is-visible');
         }
-    }
+    };
 
     app.setHiddenDateFields = function(date, fieldset) {
         app.form[fieldset + 'Day'].value = date.date();
         app.form[fieldset + 'Month'].value = date.month() + 1;
         app.form[fieldset + 'Year'].value = date.year();
-    }
+    };
 
     app.hasClass = function(elem, className) {
         if (elem.classList) {
@@ -267,7 +272,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         } else {
             new RegExp('(^| )' + className + '( |$)', 'gi').test(elem.className);
         }
-    }
+    };
 
     app.addClass = function(elem, className) {
         if (elem.classList) {
@@ -275,7 +280,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         } else {
             elem.className += ' ' + className;
         }
-    }
+    };
 
     app.removeClass = function(elem, className) {
         if (elem.classList) {
@@ -283,7 +288,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         } else {
             elem.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
         }
-    }
+    };
 
     app.cssLoader = function(url) {
         var css = document.createElement('link');
@@ -291,15 +296,15 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         css.href = url + '.css';
 
         document.head.appendChild(css);
-    }
+    };
 
     app.showModal = function() {
-        app.removeClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden")
-    }
+        app.removeClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden");
+    };
 
     app.dismissModal = function() {
-        app.addClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden")
-    }
+        app.addClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden");
+    };
 
     rcApp.init = function(data) {
 
@@ -316,7 +321,12 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             scriptElem.parentNode.insertBefore(containerElem, scriptElem.nextSibling);
         }
 
-        app.form = rcAppForm;
+        if (app.options.preflang === "ar" || app.options.preflang === "he") {
+            app.isRTL = true;
+            app.addClass(document.getElementById('rc-app'), "rc-app--is-rtl");
+        }
+
+        app.form = document.rcAppForm;
         app.form.affiliateCode.value = app.options.affiliateCode;
 
         if (app.options.affUrl) app.form.action = 'http://' + app.options.affUrl + '/LoadingSearchResults.do';
@@ -349,6 +359,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             field: document.getElementById('rc-datepicker--pickup'),
             format: app.options.calendarFormat,
             i18n: i18n,
+            isRTL: app.isRTL,
             numberOfMonths: app.options.calendarMonths || null,
             theme: 'rc-app rc-app-reset',
             onSelect: function(date) {
@@ -356,9 +367,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
                 app.dropoffDate.setMinDate(date);
                 if (dateMoment > app.dropoffDate.getMoment()) {
                     app.dropoffDate.setMoment(dateMoment);
-                    app.setHiddenDateFields(dateMoment, 'do')
+                    app.setHiddenDateFields(dateMoment, 'do');
                 }
-                app.setHiddenDateFields(dateMoment, 'pu')
+                app.setHiddenDateFields(dateMoment, 'pu');
             }
         });
 
@@ -369,10 +380,11 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             field: document.getElementById('rc-datepicker--dropoff'),
             format: app.options.calendarFormat,
             i18n: i18n,
+            isRTL: app.isRTL,
             numberOfMonths: app.options.calendarMonths || null,
             theme: 'rc-app rc-app-reset',
             onSelect: function(date) {
-                app.setHiddenDateFields(this.getMoment(), 'do')
+                app.setHiddenDateFields(this.getMoment(), 'do');
             }
         });
 
@@ -385,28 +397,28 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         containerId: 'app',
         calendarFormat: 'L',
         calendarMonths: null
-    }
+    };
 
     app.options = app.extend(defaults, app.options);
 
     app.search = {
         affiliateCode: app.options.affiliateCode,
         preflang: app.options.preflang
-    }
+    };
 
     switch (typeof app.options.css) {
         case "undefined":
-            app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
+            app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
             break;
         case "string":
             if (app.options.include) {
-                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
+                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
             }
-            app.cssLoader(app.options.css)
+            app.cssLoader(app.options.css);
             break;
         case "object":
             if (app.options.include) {
-                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base')
+                app.cssLoader('http://www.rentalcars.com/partners/integrations/stand-alone-inline/css/base');
             }
             for (var i = 0, n = app.options.css.length; i < n; i++) {
                 app.cssLoader(app.options.css[i]);
@@ -419,6 +431,6 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     var script = document.createElement('script');
     script.setAttribute('id', 'rcAppData');
     script.type = 'text/javascript';
-    script.src = 'http://www.rentalcars.com/partners/integrations/stand-alone-inline/data/' + app.options.preflang + '.js'
+    script.src = 'http://www.rentalcars.com/partners/integrations/stand-alone-inline/data/' + app.options.preflang + '.js';
     document.body.appendChild(script);
 });

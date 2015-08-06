@@ -61,7 +61,17 @@ module.exports = function(grunt) {
             build: {
                 src: 'dist'
             }
-        }
+        },
+        jshint: {
+            files: ['src/main.js'],
+            options: {
+                globals: {
+                    console: true,
+                    module: true,
+                    document: true
+                }
+            }
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-handlebars');
@@ -69,7 +79,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
-    grunt.registerTask('default', ['clean', 'handlebars', 'requirejs', 'sass', 'watch'])
-    grunt.registerTask('watcher', ['clean', 'handlebars', 'requirejs', 'sass'])
+    grunt.registerTask('default', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass', 'watch']);
+    grunt.registerTask('watcher', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass']);
 }
