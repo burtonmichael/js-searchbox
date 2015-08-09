@@ -30,6 +30,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     };
 
     app.validateForm = function() {
+        var valid = true;
     	var errors = [];
     	if (!parseInt(app.form.location.value)) {
     		errors.push(app.messages.errorLocation + ' ' + app.messages.errorManditory);
@@ -56,6 +57,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         }
 
         if (errors.length !== 0) {
+            valid = false;
 	        if (event.preventDefault){
 	            event.preventDefault();
 	        } else {
@@ -75,6 +77,39 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
             app.showModal();
         }
+
+        if (app.options.secure) {
+            valid = false;
+            app.secureSubmission();
+        }
+
+        if (!valid) {
+            if (event.preventDefault){
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+        }
+    };
+
+    app.secureSubmission = function() {
+        var field,
+            fields = [],
+            form = app.form;
+
+        if (typeof form == 'object' && form.nodeName == "FORM") {
+            var len = form.elements.length;
+            for (i=0; i<len; i++) {
+                field = form.elements[i];
+                if (field.name && !field.disabled && field.type != 'file' && field.type != 'reset' && field.type != 'submit' && field.type != 'button') {
+                    if ((field.type != 'checkbox' && field.type != 'radio') || field.checked) {
+                        fields[fields.length] = encodeURIComponent(field.name) + "=" + encodeURIComponent(field.value);
+                    }
+                }
+            }
+        }
+
+        window.open('http://' + app.baseUrl + '/LoadingSearchResults.do?' + fields.join('&').replace(/%20/g, '+'));
     };
 
     app.getJSON = function(url, params, callback) {
@@ -306,47 +341,17 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         app.addClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden");
     };
 
-    rcApp.init = function(data) {
-
-        app.messages = data;
-
-        var container = document.getElementById(app.options.containerId);
-
-        if (container) {
-            container.innerHTML = template(data);
-        } else {
-            var scriptElem = document.getElementById("rcAppScript");
-            var containerElem = document.createElement("div");
-            containerElem.innerHTML = template(data);
-            scriptElem.parentNode.insertBefore(containerElem, scriptElem.nextSibling);
-        }
-
-        if (app.options.preflang === "ar" || app.options.preflang === "he") {
-            app.isRTL = true;
-            app.addClass(document.getElementById('rc-app'), "rc-app--is-rtl");
-        }
-
-        app.form = document.rcAppForm;
-        if (app.options.affiliateCode) app.form.affiliateCode.value = app.options.affiliateCode;
-        if (app.options.preflang) app.form.preflang.value = app.options.preflang;
-        if (app.options.prefcurrency) app.form.prefcurrency.value = app.options.prefcurrency;
-        if (app.options.adcamp) app.form.adcamp.value = app.options.adcamp;
-        if (app.options.adplat) app.form.adplat.value = app.options.adplat;
-        if (app.options.enabler) app.form.enabler.value = app.options.enabler;
-        if (app.options.cor) app.form.cor.value = app.options.cor;
-
-        if (app.options.affUrl) app.form.action = 'http://' + app.options.affUrl + '/LoadingSearchResults.do';
-
-        moment.defineLocale("app", data.moment);
-        moment.locale("app");
+    app.setupDate = function() {
+        moment.defineLocale("rcApp", app.messages.moment);
+        moment.locale("rcApp");
 
         var i18n = {
-            previousMonth: data.previousMonth,
-            nextMonth: data.nextMonth,
-            months: data.moment.months,
-            monthsShort: data.moment.monthsShort,
-            weekdays: data.moment.weekdays,
-            weekdaysShort: data.moment.weekdaysShort
+            previousMonth: app.messages.previousMonth,
+            nextMonth: app.messages.nextMonth,
+            months: app.messages.moment.months,
+            monthsShort: app.messages.moment.monthsShort,
+            weekdays: app.messages.moment.weekdays,
+            weekdaysShort: app.messages.moment.weekdaysShort
         };
 
         var startDate = moment();
@@ -393,6 +398,39 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
                 app.setHiddenDateFields(this.getMoment(), 'do');
             }
         });
+    };
+
+    rcApp.init = function(data) {
+        app.messages = data;
+
+        var container = document.getElementById(app.options.containerId);
+
+        if (container) {
+            container.innerHTML = template(app.messages);
+        } else {
+            var scriptElem = document.getElementById("rcAppScript");
+            var containerElem = document.createElement("div");
+            containerElem.innerHTML = template(app.messages);
+            scriptElem.parentNode.insertBefore(containerElem, scriptElem.nextSibling);
+        }
+
+        if (app.options.preflang === "ar" || app.options.preflang === "he") {
+            app.isRTL = true;
+            app.addClass(document.getElementById('rc-app'), "rc-app--is-rtl");
+        }
+
+        app.form = document.rcAppForm;
+        app.form.action = app.baseUrl + '/LoadingSearchResults.do';
+
+        if (app.options.affiliateCode) app.form.affiliateCode.value = app.options.affiliateCode;
+        if (app.options.preflang) app.form.preflang.value = app.options.preflang;
+        if (app.options.prefcurrency) app.form.prefcurrency.value = app.options.prefcurrency;
+        if (app.options.adcamp) app.form.adcamp.value = app.options.adcamp;
+        if (app.options.adplat) app.form.adplat.value = app.options.adplat;
+        if (app.options.enabler) app.form.enabler.value = app.options.enabler;
+        if (app.options.cor) app.form.cor.value = app.options.cor;
+
+        app.setupDate();
 
         var rcScript = document.getElementById('rcAppData');
         rcScript.parentNode.removeChild(rcScript);
@@ -407,29 +445,37 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
     app.options = app.extend(defaults, app.options);
 
+    if (app.options.secure) {
+        app.baseUrl = 'https://secure.rentalcars.com';
+    } else if (app.options.affUrl) {
+        app.baseUrl = 'http://' + app.options.affUrl;
+    } else {
+        app.baseUrl = 'http://www.rentalcars.com';
+    }
+
     app.search = {
         affiliateCode: app.options.affiliateCode,
         preflang: app.options.preflang
     };
 
-    app.baseUrl = "http://www.rentalcars.com/partners/integrations/stand-alone-inline";
+    var resourceUrl = "http://www.rentalcars.com/partners/integrations/stand-alone-inline/";
 
     switch (typeof app.options.css) {
         case "undefined":
-            app.cssLoader(app.baseUrl + '/css/base');
+            app.cssLoader(resourceUrl + 'css/base');
             break;
         case "string":
             var sheetStr = app.options.css;
-            if (sheetStr.indexOf("root~") === 0) {
-                sheetStr = sheetStr.replace(/root~/, app.baseUrl);
+            if (sheetStr.indexOf("root~/") === 0) {
+                sheetStr = sheetStr.replace(/root~/, resourceUrl);
             }
             app.cssLoader(sheet);
             break;
         case "object":
             for (var i = 0, n = app.options.css.length; i < n; i++) {
                 var sheetArr = app.options.css[i];
-                if (sheetArr.indexOf("root~") === 0) {
-                    sheetArr = sheetArr.replace(/root~/, app.baseUrl);
+                if (sheetArr.indexOf("root~/") === 0) {
+                    sheetArr = sheetArr.replace(/root~\//, resourceUrl);
                 }
                 app.cssLoader(sheetArr);
             }
@@ -441,6 +487,6 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     var script = document.createElement('script');
     script.setAttribute('id', 'rcAppData');
     script.type = 'text/javascript';
-    script.src = 'http://www.rentalcars.com/partners/integrations/stand-alone-inline/data/' + app.options.preflang + '.js';
+    script.src = resourceUrl + 'data/' + app.options.preflang + '.js';
     document.body.appendChild(script);
 });
