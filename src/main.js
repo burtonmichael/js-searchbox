@@ -138,7 +138,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             }
         }
 
-        window.open('http://' + app.baseUrl + '/LoadingSearchResults.do?' + fields.join('&').replace(/%20/g, '+'));
+        window.open('http://' + (app.options.affUrl || 'www.rentalcars.com') + '/LoadingSearchResults.do?' + fields.join('&').replace(/%20/g, '+'));
     };
 
     app.getJSON = function(url, params, callback) {
@@ -178,7 +178,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     };
 
     app.getLocations = function(callback) {
-        app.getJSON('http://www.rentalcars.com/InPathAjaxAction.do', app.search, function(data) {
+        app.getJSON(app.baseUrl + '/InPathAjaxAction.do', app.search, function(data) {
             app[callback](data);
         });
     };

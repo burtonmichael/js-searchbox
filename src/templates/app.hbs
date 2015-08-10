@@ -16,6 +16,7 @@
 			<div class="rc-form-group rc-form-group--country">
 				<label>{{country}}</label>
 				<div class= rc-form-control rc-form-control--country"rc-select-wrap">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select name="country" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 						{{#each countries}}
@@ -23,27 +24,26 @@
 						{{/each}}
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 			<div class="rc-form-group rc-form-group--city">
 				<label>{{city}}</label>
 				<div class="rc-select-wrap rc-form-control rc-form-control--city rc-is-disabled">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select disabled="disabled" name="city" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 			<div class="rc-form-group rc-form-group--location">
 				<label>{{location}}</label>
 				<div class="rc-select-wrap rc-form-control rc-form-control--location rc-is-disabled">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select disabled="disabled" name="location" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 		</div>
@@ -52,31 +52,31 @@
 			<div class="rc-form-group rc-form-group--drop-country">
 				<label>{{country}}</label>
 				<div class="rc-select-wrap rc-form-control rc-form-control--country rc-is-disabled">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select disabled="disabled" name="dropCountry" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 			<div class="rc-form-group rc-form-group--drop-country">
 				<label>{{city}}</label>
 				<div class="rc-select-wrap rc-form-control rc-form-control--city rc-is-disabled">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select disabled="disabled" name="dropCity" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 			<div class="rc-form-group rc-form-group--drop-country">
 				<label>{{location}}</label>
 				<div class="rc-select-wrap rc-form-control rc-form-control--location rc-is-disabled">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select disabled="disabled" name="dropLocation" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.dropLocationChanged()">
 						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
 					</select>
 					<span>{{emptySelect}}</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 		</div>
@@ -97,6 +97,7 @@
 			<label>{{time}}</label>
 			<div class="rc-form-control-wrap rc-form-control-wrap--time">
 				<div class="rc-select-wrap rc-form-control rc-form-control--hour">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select name="puHour" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.timeChanged(this)">
 						<option value="00">00</option>
 						<option value="01">01</option>
@@ -124,9 +125,9 @@
 						<option value="23">23</option>
 					</select>
 					<span>10</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 				<div class="rc-select-wrap rc-form-control rc-form-control--minute">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select name="puMinute" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.timeChanged(this)">
 						<option value="00">00</option>
 						<option value="15">15</option>
@@ -134,7 +135,6 @@
 						<option value="45">45</option>
 					</select>
 					<span>30</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 		</div>
@@ -152,6 +152,7 @@
 			<label>{{time}}</label>
 			<div class="rc-form-control-wrap rc-form-control-wrap--time">
 				<div class="rc-select-wrap rc-form-control rc-form-control--hour">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select name="doHour" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.timeChanged(this)">
 						<option value="00">00</option>
 						<option value="01">01</option>
@@ -179,9 +180,9 @@
 						<option value="23">23</option>
 					</select>
 					<span>10</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 				<div class="rc-select-wrap rc-form-control rc-form-control--minute">
+					<i class="rc-icon rc-icon-chevron-down"></i>
 					<select name="doMinute" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.timeChanged(this)">
 						<option value="00">00</option>
 						<option value="15">15</option>
@@ -189,7 +190,6 @@
 						<option value="45">45</option>
 					</select>
 					<span>30</span>
-					<i class="rc-icon rc-icon-chevron-down"></i>
 				</div>
 			</div>
 		</div>
@@ -198,7 +198,7 @@
 			<input class="rc-form-control rc-form-control--age" value="25" onkeypress="rcApp.validateNumber(event)" type="text" name="driversAge">
 		</div>
 		<div class="rc-form-group rc-form-group--submit">
-			<button  class="rc-button">{{search}}</button>
+			<button class="rc-button">{{search}}</button>
 		</div>
 	</form>
 	<div id="rc-modal-overlay" onclick="rcApp.dismissModal()" class="rc-modal-overlay rc-modal-overlay--hidden">
