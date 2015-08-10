@@ -1,6 +1,15 @@
 'use strict';
 module.exports = function(grunt) {
     grunt.initConfig({
+        copy: {
+            main: {
+                expand: true,
+                cwd: 'src/fonts',
+                src: '*',
+                dest: 'dist/fonts',
+                filter: 'isFile'
+            }
+        },
         sass: {
             dist: {
                 options: {
@@ -80,7 +89,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask('default', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass', 'watch']);
-    grunt.registerTask('watcher', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass']);
+    grunt.registerTask('default', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass', 'copy', 'watch']);
+    grunt.registerTask('watcher', ['jshint', 'clean', 'handlebars', 'requirejs', 'sass', 'copy']);
 }

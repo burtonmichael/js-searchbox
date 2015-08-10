@@ -2,6 +2,34 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
     var app = window.rcApp || {};
 
+    app.nextElement = function(elem) {
+        if (elem.nextElementSibling) return elem.nextElementSibling;
+
+        do {
+            elem = elem.nextSibling;
+        } while (elem && elem.nodeType !== 1);
+
+        return elem;
+    };
+
+    app.setFocus = function(elem) {
+        app.addClass(elem.parentNode, 'rc-has-focus');
+    };
+
+    app.unsetFocus = function(elem) {
+        app.removeClass(elem.parentNode, 'rc-has-focus');
+    };
+
+    app.setDisabled = function(elem) {
+        elem.disabled = true;
+        app.addClass(elem.parentNode, 'rc-is-disabled');
+    };
+
+    app.unsetDisabled = function(elem) {
+        elem.disabled = false;
+        app.removeClass(elem.parentNode, 'rc-is-disabled');
+    };
+
     app.extend = function(defaults, options) {
         var extended = {};
         var prop;
@@ -78,17 +106,18 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             app.showModal();
         }
 
-        if (app.options.secure) {
-            valid = false;
-            app.secureSubmission();
-        }
-
         if (!valid) {
             if (event.preventDefault){
                 event.preventDefault();
             } else {
                 event.returnValue = false;
             }
+            return;
+        }
+
+        if (app.options.secure) {
+            valid = false;
+            app.secureSubmission();
         }
     };
 
@@ -154,8 +183,10 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         });
     };
 
-    app.localeChanged = function(event) {
-        var locale = event.name;
+    app.localeChanged = function(elem) {
+        var locale = elem.name;
+
+        app.nextElement(elem).innerHTML = elem.options[elem.selectedIndex].innerHTML;
 
         var callback;
 
@@ -164,14 +195,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             case 'dropCountry':
                 app.clear(locale);
                 callback = locale + 'Changed';
-                app.search.country = event.options[event.selectedIndex].value;
+                app.search.country = elem.options[elem.selectedIndex].value;
                 delete app.search.city;
                 break;
             case 'city':
             case 'dropCity':
                 app.clear(locale);
                 callback = locale + 'Changed';
-                app.search.city = event.options[event.selectedIndex].value;
+                app.search.city = elem.options[elem.selectedIndex].value;
                 break;
             case 'location':
                 app.clear('location');
@@ -205,14 +236,22 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     };
 
     app.clearField = function(elem) {
-        elem.disabled = true;
-        elem.options.length = 0;
+        if (elem.options.length > 0) {
+            app.setDisabled(elem);
+            elem.options.length = 0;
 
-        var opt = document.createElement('option');
-        opt.innerHTML = app.messages.emptySelect;
-        opt.value = 0;
-        opt.disabled = true;
-        elem.appendChild(opt);
+            var opt = document.createElement('option');
+            opt.innerHTML = app.messages.emptySelect;
+            opt.value = 0;
+            opt.disabled = true;
+            elem.appendChild(opt);
+
+            app.nextElement(elem).innerHTML = app.messages.emptySelect;
+        }
+    };
+
+    app.timeChanged = function(elem) {
+        app.nextElement(elem).innerHTML = elem.options[elem.selectedIndex].innerHTML;
     };
 
     app.countryChanged = function(data) {
@@ -220,6 +259,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         if (data.cityList.length === 1) {
             app.form.city.selectedIndex = 1;
             app.search.city = data.cityList[0].id;
+            app.nextElement(app.form.city).innerHTML = data.cityList[0].name;
+
             app.getLocations('cityChanged');
         }
     };
@@ -229,26 +270,29 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         if (data.locationList.length === 1) {
             app.form.location.selectedIndex = 1;
             app.search.location = data.locationList[0].id;
+            app.nextElement(app.form.location).innerHTML = data.locationList[0].name;
+
             app.locationChanged();
         }
     };
 
+    app.copySelect = function(source, dest) {
+        dest.innerHTML = source.innerHTML;
+        dest.selectedIndex = source.selectedIndex;
+        app.unsetDisabled(dest);
+
+        app.nextElement(dest).innerHTML = app.nextElement(source).innerHTML;
+    };
+
     app.locationChanged = function() {
-        app.form.dropCountry.innerHTML = app.form.country.innerHTML;
-        app.form.dropCountry.selectedIndex = app.form.country.selectedIndex;
+        var form = app.form;
 
-        app.form.dropCity.innerHTML = app.form.city.innerHTML;
-        app.form.dropCity.selectedIndex = app.form.city.selectedIndex;
+        app.copySelect(form.country, form.dropCountry);
+        app.copySelect(form.city, form.dropCity);
+        app.copySelect(form.location, form.dropLocation);
 
-        app.form.dropLocation.innerHTML = app.form.location.innerHTML;
-        app.form.dropLocation.selectedIndex = app.form.location.selectedIndex;
-
-        app.form.dropCountry.disabled = false;
-        app.form.dropCity.disabled = false;
-        app.form.dropLocation.disabled = false;
-
-        app.form.locationName.value = app.form.location.options[app.form.location.selectedIndex].innerHTML;
-        app.form.dropLocationName.value = app.form.dropLocation.options[app.form.dropLocation.selectedIndex].innerHTML;
+        form.locationName.value = form.location.options[form.location.selectedIndex].innerHTML;
+        form.dropLocationName.value = form.dropLocation.options[form.dropLocation.selectedIndex].innerHTML;
     };
 
     app.dropCountryChanged = function(data) {
@@ -257,6 +301,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             app.form.dropCity.selectedIndex = 1;
             app.search.city = data.cityList[0].id;
             app.getLocations('cityChanged');
+
+            app.nextElement(app.form.dropCity).innerHTML = data.cityList[0].name;
         }
     };
 
@@ -265,6 +311,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         if (data.locationList.length === 1) {
             app.form.dropLocation.selectedIndex = 1;
             app.search.dropLocation = data.locationList[0].id;
+
+            app.nextElement(app.form.dropLocation).innerHTML = data.locationList[0].name;
+
             app.dropLocationChanged();
         }
     };
@@ -284,7 +333,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         }
 
         elem.appendChild(fragment);
-        elem.disabled = false;
+        app.unsetDisabled(elem);
     };
 
     app.returnChanged = function(elem) {
@@ -339,6 +388,10 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
     app.dismissModal = function() {
         app.addClass(document.getElementById("rc-modal-overlay"), "rc-modal-overlay--hidden");
+    };
+
+    app.clickThrough = function(elem) {
+        app.nextElement(elem).click();
     };
 
     app.setupDate = function() {
@@ -458,7 +511,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         preflang: app.options.preflang
     };
 
-    var resourceUrl = "http://www.rentalcars.com/partners/integrations/stand-alone-inline/";
+    var resourceUrl = app.baseUrl + "/partners/integrations/stand-alone-inline/";
 
     switch (typeof app.options.css) {
         case "undefined":
