@@ -4,9 +4,9 @@ module.exports = function(grunt) {
         copy: {
             main: {
                 expand: true,
-                cwd: 'src/fonts',
+                cwd: 'src/img',
                 src: '*',
-                dest: 'dist/fonts',
+                dest: 'dist/img',
                 filter: 'isFile'
             }
         },
@@ -27,7 +27,17 @@ module.exports = function(grunt) {
                     amd: ['handlebars.runtime']
                 },
                 files: {
-                    'src/templates/compiled/app.tpl.js': 'src/templates/*.hbs'
+                    'src/templates/compiled/app.tpl.js': 'src/templates/app.hbs'
+                }
+            }
+        },
+        uglify: {
+            options: {
+                banner: '/*! rcApp <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+            },
+            dist: {
+                files: {
+                    './dist/app.js': './dist/app.js'
                 }
             }
         },
@@ -48,9 +58,6 @@ module.exports = function(grunt) {
                     shim: {
                         'pikaday': {
                             deps: ['moment']
-                        },
-                        'jquery.cascadingdropdown.min': {
-                            deps: ['jquery']
                         }
                     },
                     preserveLicenseComments: false

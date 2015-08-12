@@ -12,71 +12,73 @@
 		<input type="hidden" name="locationName">
 		<input type="hidden" name="dropLocationName">
 		<h3>{{title}}</h3>
-		<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--pickup">
-			<div class="rc-form-group rc-form-group--country">
-				<label>{{country}}</label>
-				<div class= rc-form-control rc-form-control--country"rc-select-wrap">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select name="country" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-						{{#each countries}}
-							<option value="{{id}}">{{name}}</option>
-						{{/each}}
-					</select>
-					<span>{{emptySelect}}</span>
+		<div class="rc-locations-wrap" id="rc-locations-wrap">
+			<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--pickup">
+				<div class="rc-form-group rc-form-group--country">
+					<label>{{country}}</label>
+					<div class="rc-form-control rc-form-control--country rc-select-wrap">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select name="country" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+							{{#each countries}}
+								<option value="{{id}}">{{name}}</option>
+							{{/each}}
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
+				</div>
+				<div class="rc-form-group rc-form-group--city">
+					<label>{{city}}</label>
+					<div class="rc-select-wrap rc-form-control rc-form-control--city rc-form-control--is-disabled">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select disabled="disabled" name="city" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
+				</div>
+				<div class="rc-form-group rc-form-group--location">
+					<label>{{location}}</label>
+					<div class="rc-select-wrap rc-form-control rc-form-control--location rc-form-control--is-disabled">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select disabled="disabled" name="location" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
 				</div>
 			</div>
-			<div class="rc-form-group rc-form-group--city">
-				<label>{{city}}</label>
-				<div class="rc-select-wrap rc-form-control rc-form-control--city rc-is-disabled">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select disabled="disabled" name="city" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-					</select>
-					<span>{{emptySelect}}</span>
+			<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--dropoff">
+				<h4>{{dropOff}}</h4>
+				<div class="rc-form-group rc-form-group--drop-country">
+					<label>{{country}}</label>
+					<div class="rc-select-wrap rc-form-control rc-form-control--country rc-form-control--is-disabled">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select disabled="disabled" name="dropCountry" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
 				</div>
-			</div>
-			<div class="rc-form-group rc-form-group--location">
-				<label>{{location}}</label>
-				<div class="rc-select-wrap rc-form-control rc-form-control--location rc-is-disabled">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select disabled="disabled" name="location" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-					</select>
-					<span>{{emptySelect}}</span>
+				<div class="rc-form-group rc-form-group--drop-country">
+					<label>{{city}}</label>
+					<div class="rc-select-wrap rc-form-control rc-form-control--city rc-form-control--is-disabled">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select disabled="disabled" name="dropCity" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
 				</div>
-			</div>
-		</div>
-		<div class="rc-form-group-wrap rc-form-group-wrap--locations rc-form-group-wrap--dropoff" id="rc-dropoff">
-			<h4>{{dropOff}}</h4>
-			<div class="rc-form-group rc-form-group--drop-country">
-				<label>{{country}}</label>
-				<div class="rc-select-wrap rc-form-control rc-form-control--country rc-is-disabled">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select disabled="disabled" name="dropCountry" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-					</select>
-					<span>{{emptySelect}}</span>
-				</div>
-			</div>
-			<div class="rc-form-group rc-form-group--drop-country">
-				<label>{{city}}</label>
-				<div class="rc-select-wrap rc-form-control rc-form-control--city rc-is-disabled">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select disabled="disabled" name="dropCity" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.localeChanged(this)">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-					</select>
-					<span>{{emptySelect}}</span>
-				</div>
-			</div>
-			<div class="rc-form-group rc-form-group--drop-country">
-				<label>{{location}}</label>
-				<div class="rc-select-wrap rc-form-control rc-form-control--location rc-is-disabled">
-					<i class="rc-icon rc-icon-chevron-down"></i>
-					<select disabled="disabled" name="dropLocation" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.dropLocationChanged()">
-						<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
-					</select>
-					<span>{{emptySelect}}</span>
+				<div class="rc-form-group rc-form-group--drop-country">
+					<label>{{location}}</label>
+					<div class="rc-select-wrap rc-form-control rc-form-control--location rc-form-control--is-disabled">
+						<i class="rc-icon rc-icon-chevron-down"></i>
+						<select disabled="disabled" name="dropLocation" onfocus="rcApp.setFocus(this)" onblur="rcApp.unsetFocus(this)" onchange="rcApp.dropLocationChanged()">
+							<option selected="selected" disabled="disabled" value="0">{{emptySelect}}</option>
+						</select>
+						<span>{{emptySelect}}</span>
+					</div>
 				</div>
 			</div>
 		</div>

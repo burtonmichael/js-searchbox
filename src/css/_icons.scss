@@ -1,79 +1,65 @@
-@font-face {
-    font-family: "rcAppIcons";
-    src: url("../fonts/icons.eot");
-    src: url("../fonts/icons.eot?#iefix") format("embedded-opentype"),
-    url("../fonts/icons.woff") format("woff"),
-    url("../fonts/icons.ttf") format("truetype"),
-    url("../fonts/icons.svg#icons") format("svg");
-    font-weight: normal;
-    font-style: normal;
-}
 #rc-app {
-  .rc-icon:before {
-      font-family: "rcAppIcons" !important;
-      font-style: normal !important;
-      font-weight: normal !important;
-      font-variant: normal !important;
-      text-transform: none !important;
-      speak: none !important;
-      line-height: 1 !important;
-      -webkit-font-smoothing: antialiased !important;
-      -moz-osx-font-smoothing: grayscale !important;
+  .rc-icon {
+    background-image: url(../img/rc-icons-2x.png) !important;
+    background-repeat: no-repeat !important;
+    background-size: auto 14px !important;
+    width: 14px !important;
+    height: 14px !important;
   }
 
-  .rc-icon-city:before {
-      content: "a" !important;
+  .rc-icon-city {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-globe:before {
-      content: "b" !important;
+  .rc-icon-globe {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-clock:before {
-      content: "c" !important;
+  .rc-icon-clock {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-magnify:before {
-      content: "d" !important;
+  .rc-icon-magnify {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-pointer:before {
-      content: "e" !important;
+  .rc-icon-pointer {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-airplane:before {
-      content: "f" !important;
+  .rc-icon-airplane {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-calendar:before {
-      content: "g" !important;
+  .rc-icon-calendar {
+      background-position: -91px 0 !important;
   }
 
-  .rc-icon-chevron-down:before {
-      content: "h" !important;
+  .rc-icon-chevron-down {
+      background-position: -106px -1px !important;
   }
 
-  .rc-icon-train:before {
-      content: "i" !important;
+  .rc-icon-train {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-chevron-left:before {
-      content: "j" !important;
+  .rc-icon-chevron-left {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-chevron-right:before {
-      content: "k" !important;
+  .rc-icon-chevron-right {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-loader:before {
-      content: "l" !important;
+  .rc-icon-loader {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-user:before {
-      content: "n" !important;
+  .rc-icon-user {
+      background-position: 0px 0px !important;
   }
 
-  .rc-icon-tick:before {
-      content: "o" !important;
+  .rc-icon-tick {
+      background-position: 0px 0px !important;
   }
 }

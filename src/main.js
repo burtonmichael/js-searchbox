@@ -1,5 +1,4 @@
-require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
-
+require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handlebars, moment, Pikaday, template) {
     var app = window.rcApp || {};
 
     app.nextElement = function(elem) {
@@ -13,21 +12,21 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     };
 
     app.setFocus = function(elem) {
-        app.addClass(elem.parentNode, 'rc-has-focus');
+        app.addClass(elem.parentNode, 'rc-form-control--has-focus');
     };
 
     app.unsetFocus = function(elem) {
-        app.removeClass(elem.parentNode, 'rc-has-focus');
+        app.removeClass(elem.parentNode, 'rc-form-control--has-focus');
     };
 
     app.setDisabled = function(elem) {
         elem.disabled = true;
-        app.addClass(elem.parentNode, 'rc-is-disabled');
+        app.addClass(elem.parentNode, 'rc-form-control--is-disabled');
     };
 
     app.unsetDisabled = function(elem) {
         elem.disabled = false;
-        app.removeClass(elem.parentNode, 'rc-is-disabled');
+        app.removeClass(elem.parentNode, 'rc-form-control--is-disabled');
     };
 
     app.extend = function(defaults, options) {
@@ -152,15 +151,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         }
 
         var xhr = new XMLHttpRequest();
-
-        if ("withCredentials" in xhr) {
-            xhr.open('GET', url, true);
-        } else if (typeof XDomainRequest != "undefined") {
-            xhr = new XDomainRequest();
-            xhr.open('GET', url);
-        } else {
-            xhr = null;
-        }
+        xhr.open('GET', url, true);
 
         xhr.onreadystatechange = function() {
             if (this.readyState === 4) {
@@ -238,15 +229,17 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
     app.clearField = function(elem) {
         if (elem.options.length > 0) {
             app.setDisabled(elem);
+            var emptyVal = elem.options[0].innerHTML;
+
             elem.options.length = 0;
 
             var opt = document.createElement('option');
-            opt.innerHTML = app.messages.emptySelect;
+            opt.innerHTML = emptyVal;
             opt.value = 0;
             opt.disabled = true;
             elem.appendChild(opt);
 
-            app.nextElement(elem).innerHTML = app.messages.emptySelect;
+            app.nextElement(elem).innerHTML = emptyVal;
         }
     };
 
@@ -338,9 +331,9 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
     app.returnChanged = function(elem) {
         if (elem.checked) {
-            app.removeClass(document.getElementById('rc-dropoff'), 'is-visible');
+            app.removeClass(document.getElementById('rc-locations-wrap'), 'rc-locations-wrap--has-return');
         } else {
-            app.addClass(document.getElementById('rc-dropoff'), 'is-visible');
+            app.addClass(document.getElementById('rc-locations-wrap'), 'rc-locations-wrap--has-return');
         }
     };
 
@@ -394,6 +387,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         app.nextElement(elem).click();
     };
 
+    app.getScript = function(url, id) {
+        var script = document.createElement('script');
+        script.setAttribute('id', id);
+        script.type = 'text/javascript';
+        script.src = url + '.js';
+        document.body.appendChild(script);
+    };
+
     app.setupDate = function() {
         moment.defineLocale("rcApp", app.messages.moment);
         moment.locale("rcApp");
@@ -407,10 +408,10 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             weekdaysShort: app.messages.moment.weekdaysShort
         };
 
-        var startDate = moment();
+        var startDate = moment().startOf('isoWeek');
         startDate.add(3, 'days');
 
-        var endDate = moment();
+        var endDate = moment().startOf('isoWeek');
         endDate.add(6, 'days');
 
         app.setHiddenDateFields(startDate, 'pu');
@@ -418,6 +419,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
         app.pickupDate = new Pikaday({
             defaultDate: startDate.toDate(),
+            startRange: startDate.toDate(),
+            endRange: endDate.toDate(),
             minDate: new Date(),
             setDefaultDate: true,
             field: document.getElementById('rc-datepicker--pickup'),
@@ -428,8 +431,11 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             theme: 'rc-app rc-app-reset',
             onSelect: function(date) {
                 var dateMoment = this.getMoment();
+                this.setStartRange(date);
+                app.dropoffDate.setStartRange(date);
                 app.dropoffDate.setMinDate(date);
                 if (dateMoment > app.dropoffDate.getMoment()) {
+                    this.setEndRange(date);
                     app.dropoffDate.setMoment(dateMoment);
                     app.setHiddenDateFields(dateMoment, 'do');
                 }
@@ -439,6 +445,8 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
 
         app.dropoffDate = new Pikaday({
             defaultDate: endDate.toDate(),
+            startRange: startDate.toDate(),
+            endRange: endDate.toDate(),
             minDate: startDate.toDate(),
             setDefaultDate: true,
             field: document.getElementById('rc-datepicker--dropoff'),
@@ -448,30 +456,14 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             numberOfMonths: app.options.calendarMonths || null,
             theme: 'rc-app rc-app-reset',
             onSelect: function(date) {
+                app.pickupDate.setEndRange(date);
+                this.setEndRange(date);
                 app.setHiddenDateFields(this.getMoment(), 'do');
             }
         });
     };
 
-    rcApp.init = function(data) {
-        app.messages = data;
-
-        var container = document.getElementById(app.options.containerId);
-
-        if (container) {
-            container.innerHTML = template(app.messages);
-        } else {
-            var scriptElem = document.getElementById("rcAppScript");
-            var containerElem = document.createElement("div");
-            containerElem.innerHTML = template(app.messages);
-            scriptElem.parentNode.insertBefore(containerElem, scriptElem.nextSibling);
-        }
-
-        if (app.options.preflang === "ar" || app.options.preflang === "he") {
-            app.isRTL = true;
-            app.addClass(document.getElementById('rc-app'), "rc-app--is-rtl");
-        }
-
+    app.setupForm = function() {
         app.form = document.rcAppForm;
         app.form.action = app.baseUrl + '/LoadingSearchResults.do';
 
@@ -482,11 +474,46 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         if (app.options.adplat) app.form.adplat.value = app.options.adplat;
         if (app.options.enabler) app.form.enabler.value = app.options.enabler;
         if (app.options.cor) app.form.cor.value = app.options.cor;
+    };
 
+    app.setupTemplate = function(template, custom) {
+        var container = document.getElementById(app.options.containerId);
+        var rcAppScript = document.getElementById("rcApp");
+        var rcAppDataScript = document.getElementById('rcAppData');
+
+        if (custom) {
+            template = Handlebars.template(template);
+        }
+
+        if (container) {
+            container.innerHTML = template(app.messages);
+        } else {
+            var containerElem = document.createElement("div");
+            containerElem.innerHTML = template(app.messages);
+            rcAppScript.parentNode.insertBefore(containerElem, rcAppScript.nextSibling);
+        }
+
+        if (app.options.preflang === "ar" || app.options.preflang === "he") {
+            app.isRTL = true;
+            app.addClass(document.getElementById('rc-app'), "rc-app--is-rtl");
+        }
+
+        app.setupForm();
         app.setupDate();
 
-        var rcScript = document.getElementById('rcAppData');
-        rcScript.parentNode.removeChild(rcScript);
+        rcAppScript.parentNode.removeChild(rcAppScript);
+        rcAppDataScript.parentNode.removeChild(rcAppDataScript);
+    };
+
+    app.init = function(data) {
+        app.messages = data;
+
+        if (app.options.template) {
+            // app.getScript(app.resourceUrl + 'templates/' + app.options.template, 'rcAppTemplate');
+            app.getScript('../stand-alone-templates/compiled/' + app.options.template, 'rcAppTemplate');
+        } else {
+            app.setupTemplate(template);
+        }
     };
 
     var defaults = {
@@ -511,16 +538,16 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
         preflang: app.options.preflang
     };
 
-    var resourceUrl = app.baseUrl + "/partners/integrations/stand-alone-inline/";
+    app.resourceUrl = app.baseUrl + "/partners/integrations/stand-alone-inline/";
 
     switch (typeof app.options.css) {
         case "undefined":
-            app.cssLoader(resourceUrl + 'css/base');
+            app.cssLoader(app.resourceUrl + 'css/base');
             break;
         case "string":
             var sheetStr = app.options.css;
             if (sheetStr.indexOf("root~/") === 0) {
-                sheetStr = sheetStr.replace(/root~/, resourceUrl);
+                sheetStr = sheetStr.replace(/root~/, app.resourceUrl);
             }
             app.cssLoader(sheet);
             break;
@@ -528,7 +555,7 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             for (var i = 0, n = app.options.css.length; i < n; i++) {
                 var sheetArr = app.options.css[i];
                 if (sheetArr.indexOf("root~/") === 0) {
-                    sheetArr = sheetArr.replace(/root~\//, resourceUrl);
+                    sheetArr = sheetArr.replace(/root~\//, app.resourceUrl);
                 }
                 app.cssLoader(sheetArr);
             }
@@ -537,9 +564,5 @@ require(['moment', 'pikaday', 'template'], function(moment, Pikaday, template) {
             break;
     }
 
-    var script = document.createElement('script');
-    script.setAttribute('id', 'rcAppData');
-    script.type = 'text/javascript';
-    script.src = resourceUrl + 'data/' + app.options.preflang + '.js';
-    document.body.appendChild(script);
+    app.getScript(app.resourceUrl + 'data/' + app.options.preflang, 'rcAppData');
 });

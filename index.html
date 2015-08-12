@@ -7,18 +7,19 @@
 </head>
 
 <body>
-    <!-- <div id="app"></div> -->
+    <div id="app"></div>
     <script>
     var rcApp = {
         options: {
             preflang: 'en',
             affiliateCode: 'easycar_rc',
             secure: true,
+            template: 'test',
             // cor: 'gb',
             // prefcurrency: 'USD',
             // calendarFormat: 'L',
             // calendarMonths: 2,
-            // containerId: 'app',
+            containerId: 'app',
             // affUrl: 'booking.easycar.com',
             // adcamp: 'testcamp',
             // adplat: 'testplat',
@@ -29,7 +30,8 @@
 
     // "root~" is a shorthand reference to "http://www.rentalcars.com/partners/integrations/stand-alone-inline"
     </script>
-    <script id="rcAppScript" src="dist/app.js"></script>
+    <!-- <script id="rcAppScript" src="http://www.rentalcars.com/partners/integrations/stand-alone-inline/app.js"></script> -->
+    <script id="rcApp" src="dist/app.js"></script>
 </body>
 
 </html>
