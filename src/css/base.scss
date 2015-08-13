@@ -278,6 +278,10 @@
 
 	&.rc-app--is-rtl {
 		direction: rtl !important;
+		.rc-icon {
+		    left: 12px !important;
+		    right: auto !important;
+		}
 		.rc-form-group-wrap {
 			&--locations {
 				label {

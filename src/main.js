@@ -478,11 +478,13 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
 
     app.setupTemplate = function(template, custom) {
         var container = document.getElementById(app.options.containerId);
-        var rcAppScript = document.getElementById("rcApp");
+        var rcAppScript = document.getElementById("rcAppScript");
         var rcAppDataScript = document.getElementById('rcAppData');
 
         if (custom) {
             template = Handlebars.template(template);
+            var rcAppTemplateScript = document.getElementById('rcAppTemplate');
+            rcAppTemplateScript.parentNode.removeChild(rcAppTemplateScript);
         }
 
         if (container) {
@@ -506,7 +508,7 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
     };
 
     app.init = function(data) {
-        app.messages = data;
+        app.messages = app.messages ? app.extend(data, app.messages) : data;
 
         if (app.options.template) {
             // app.getScript(app.resourceUrl + 'templates/' + app.options.template, 'rcAppTemplate');

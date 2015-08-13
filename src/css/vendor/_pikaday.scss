@@ -210,7 +210,7 @@
         border-radius: 3px 0 0 3px !important;
     }
 
-    .is-rtl .is-startrange .pika-button {
+    &.is-rtl .is-startrange .pika-button {
         border-radius: 0 3px 3px 0 !important;
     }
 
@@ -221,7 +221,7 @@
         border-radius: 0 3px 3px 0 !important;
     }
 
-    .is-rtl .is-endrange .pika-button {
+    &.is-rtl .is-endrange .pika-button {
         border-radius: 3px 0 0 3px !important;
     }
 
