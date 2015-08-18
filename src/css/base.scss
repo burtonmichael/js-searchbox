@@ -36,6 +36,7 @@
 		padding: 0 0 4px !important;
 	}
 
+	form,
 	.rc-form-group-wrap,
 	.rc-form-control-wrap,
 	.rc-form-group {
@@ -77,14 +78,14 @@
 
 	.rc-form-group {
 		margin-bottom: 8px !important;
+		float: left !important;
+		width: 100% !important;
 		&--date {
 			width: 44% !important;
-			float: left !important;
 		}
 		&--time {
 			margin-left: 3% !important;
 			width: 53% !important;
-			float: left !important;
 		}
 		&--return {
 			label {
@@ -99,6 +100,7 @@
 			margin-bottom: 0 !important;
 		}
 		&--submit {
+			width: auto !important;
 			position: absolute !important;
 			bottom: 0 !important;
 			right: 0 !important;
@@ -148,6 +150,9 @@
 	    	opacity: 0 !important;
 	    	filter: alpha(opacity=0) !important;
 	    }
+	    &--date {
+	    	text-transform: capitalize !important;
+	    }
 	    &--is-disabled {
     	    background: #eee !important;
     	    select {
@@ -168,13 +173,6 @@
 	    &--minute {
 	    	border-left-width: 0 !important;
 	    }
-	    &--age {
-	    	width: 5em !important;
-	    }
-	}
-
-	.rc-input-wrap {
-		position: relative !important;
 	}
 
 	.rc-icon {
@@ -182,7 +180,17 @@
 		right: 12px !important;
 		top: 50% !important;
 		margin-top: -7px !important;
-		&-calendar {
+	}
+
+	.rc-input-wrap {
+		float: left !important;
+		width: 100% !important;
+		position: relative !important;
+		&--age {
+    		float: none !important;
+			width: 10em !important;
+		}
+		.rc-icon {
 			z-index: 2 !important;
 		}
 	}
@@ -246,7 +254,7 @@
 		&-close {
 			cursor: pointer !important;
 			float: right !important;
-			font-size: 21px !important;
+			font-size: 16px !important;
 			font-weight: 700 !important;
 			line-height: 1 !important;
 			color: #000 !important;

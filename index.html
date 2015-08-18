@@ -7,52 +7,55 @@
 </head>
 
 <body>
-    <!-- <div id="app"></div> -->
+    <div id="rcApp"></div>
+
     <script>
     var rcApp = {
         options: {
-            preflang: 'he',
+            preflang: 'en',
             affiliateCode: 'easycar_rc',
-            // secure: true,
-            // template: 'test',
+            containerId: 'rcApp',
+            // template: 'no-labels',
             // cor: 'gb',
             // prefcurrency: 'USD',
-            // calendarFormat: 'L',
+            // calendarFormat: 'D MMM YYYY',
             // calendarMonths: 2,
-            // containerId: 'app',
             // affUrl: 'booking.easycar.com',
             // adcamp: 'testcamp',
             // adplat: 'testplat',
             // enabler: 'test',
-            // css: ['dist/css/base']
+            // script: ['import/asd', 'asd'],
+            // css: ['css/base', 'import/fru_rc/styles'],
+            // All resources relative to 'https://secure.rentalcars.com/partners/integrations/stand-alone-inline/'
+            // Set to false if no style sheet is to be loaded
+            // Remove property entirely for default to be loaded
         },
         // messages: {
-        //     // "title": "Test",
-        //     // "country": "Country",
-        //     // "pickUp": "Pick up",
-        //     // "city": "City",
-        //     // "location": "Location",
-        //     // "emptySelect": "Please Select",
-        //     // "dropOff": "Drop Off",
-        //     // "dropOffDate": "Drop off Date",
-        //     // "time": "Time",
-        //     // "pickUpDate": "Pick up Date",
-        //     // "search": "Search",
-        //     // "errorLocation": "Pick up location",
-        //     // "errorDropLocation": "Drop off location",
-        //     // "errorDriversAge": "Driver's age",
-        //     // "sorry": "Sorry",
-        //     // "errorManditory": "must be specified",
-        //     // "errorDateLength": "There must be at least one hour between pick up and drop off",
-        //     // "returnSameLocation": "Return car to the same location",
-        //     // "driverAge": "Driver's age",
-        //     // "countries": []
+        //     "title": "Test",
+        //     "country": "Country",
+        //     "pickUp": "Pick up",
+        //     "city": "City",
+        //     "location": "Location",
+        //     "emptySelect": "Please Select",
+        //     "dropOff": "Drop Off",
+        //     "dropOffDate": "Drop off Date",
+        //     "time": "Time",
+        //     "pickUpDate": "Pick up Date",
+        //     "search": "Search",
+        //     "errorLocation": "Pick up location",
+        //     "errorDropLocation": "Drop off location",
+        //     "errorDriversAge": "Driver's age",
+        //     "sorry": "Sorry",
+        //     "errorManditory": "must be specified",
+        //     "errorDateLength": "There must be at least one hour between pick up and drop off",
+        //     "returnSameLocation": "Return car to the same location",
+        //     "driverAge": "Driver's age",
+        //     "countries": []
         // }
     }
-
-    // "root~" is a shorthand reference to "http://www.rentalcars.com/partners/integrations/stand-alone-inline"
     </script>
-    <!-- <script id="rcAppScript" src="http://www.rentalcars.com/partners/integrations/stand-alone-inline/app.js"></script> -->
+
+    <script id="rcAppScript" src="https://secure.rentalcars.com/partners/integrations/stand-alone-inline/app.js"></script>
     <script id="rcAppScript" src="dist/app.js"></script>
 </body>
 

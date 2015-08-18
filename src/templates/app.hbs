@@ -60,7 +60,7 @@
 						<span>{{emptySelect}}</span>
 					</div>
 				</div>
-				<div class="rc-form-group rc-form-group--drop-country">
+				<div class="rc-form-group rc-form-group--drop-city">
 					<label>{{city}}</label>
 					<div class="rc-select-wrap rc-form-control rc-form-control--city rc-form-control--is-disabled">
 						<i class="rc-icon rc-icon-chevron-down"></i>
@@ -70,7 +70,7 @@
 						<span>{{emptySelect}}</span>
 					</div>
 				</div>
-				<div class="rc-form-group rc-form-group--drop-country">
+				<div class="rc-form-group rc-form-group--drop-location">
 					<label>{{location}}</label>
 					<div class="rc-select-wrap rc-form-control rc-form-control--location rc-form-control--is-disabled">
 						<i class="rc-icon rc-icon-chevron-down"></i>
@@ -87,7 +87,7 @@
 		</div>
 		<div class="rc-form-group rc-form-group--date rc-date--pickup">
 			<label>{{pickUpDate}}</label>
-			<div class="rc-input-wrap">
+			<div class="rc-input-wrap rc-input-wrap--calendar">
 				<i class="rc-icon rc-icon-calendar" onclick="rcApp.clickThrough(this)"></i>
 				<input class="rc-form-control rc-form-control--date" readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--pickup">
 				<input type="hidden" name="puDay">
@@ -142,7 +142,7 @@
 		</div>
 		<div class="rc-form-group rc-form-group--date rc-date--dropoff">
 			<label>{{dropOffDate}}</label>
-			<div class="rc-input-wrap">
+			<div class="rc-input-wrap rc-input-wrap--calendar">
 				<i class="rc-icon rc-icon-calendar" onclick="rcApp.clickThrough(this)"></i>
 				<input class="rc-form-control rc-form-control--date" readonly="readonly" spellcheck="false" type="text" name="" id="rc-datepicker--dropoff">
 				<input type="hidden" name="doDay">
@@ -197,7 +197,10 @@
 		</div>
 		<div class="rc-form-group rc-form-group--age">
 			<label>{{driverAge}}</label>
-			<input class="rc-form-control rc-form-control--age" value="25" onkeypress="rcApp.validateNumber(event)" type="text" name="driversAge">
+			<div class="rc-input-wrap rc-input-wrap--age">
+				<i class="rc-icon rc-icon-user" onclick="rcApp.clickThrough(this)"></i>
+				<input class="rc-form-control rc-form-control--age" placeholder="{{driverAge}}" onkeypress="rcApp.validateNumber(event)" type="text" name="driversAge">
+			</div>
 		</div>
 		<div class="rc-form-group rc-form-group--submit">
 			<button class="rc-button">{{search}}</button>
@@ -207,7 +210,7 @@
 		<div class="rc-modal">
 			<div class="rc-modal-header">
 				<span>{{sorry}}</span>
-				<div onclick="rcApp.dismissModal()" class="rc-modal-close">×</div>
+				<div onclick="rcApp.dismissModal()" class="rc-modal-close">x</div>
 			</div>
 			<div id="rc-modal-body" class="rc-modal-body"></div>
 		</div>

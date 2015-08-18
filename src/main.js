@@ -57,7 +57,15 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
     };
 
     app.validateForm = function() {
-        var valid = true;
+        function returnFalse() {
+            if (event.preventDefault){
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+            return false;
+        }
+
     	var errors = [];
     	if (!parseInt(app.form.location.value)) {
     		errors.push(app.messages.errorLocation + ' ' + app.messages.errorManditory);
@@ -84,12 +92,6 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
         }
 
         if (errors.length !== 0) {
-            valid = false;
-	        if (event.preventDefault){
-	            event.preventDefault();
-	        } else {
-	            event.returnValue = false;
-	        }
             var body = document.getElementById('rc-modal-body');
 
             while (body.firstChild) {
@@ -103,20 +105,12 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
             }
 
             app.showModal();
+            return returnFalse();
         }
 
-        if (!valid) {
-            if (event.preventDefault){
-                event.preventDefault();
-            } else {
-                event.returnValue = false;
-            }
-            return;
-        }
-
-        if (app.options.secure) {
-            valid = false;
+        if (window.location.protocol === 'https:') {
             app.secureSubmission();
+            return returnFalse();
         }
     };
 
@@ -384,7 +378,12 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
     };
 
     app.clickThrough = function(elem) {
-        app.nextElement(elem).click();
+        var nextElem = app.nextElement(elem);
+        if (nextElem.attributes.readonly) {
+            nextElem.click();
+        } else {
+            nextElem.focus();
+        }
     };
 
     app.getScript = function(url, id) {
@@ -408,10 +407,10 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
             weekdaysShort: app.messages.moment.weekdaysShort
         };
 
-        var startDate = moment().startOf('isoWeek');
+        var startDate = moment().startOf('day');
         startDate.add(3, 'days');
 
-        var endDate = moment().startOf('isoWeek');
+        var endDate = moment().startOf('day');
         endDate.add(6, 'days');
 
         app.setHiddenDateFields(startDate, 'pu');
@@ -465,7 +464,7 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
 
     app.setupForm = function() {
         app.form = document.rcAppForm;
-        app.form.action = app.baseUrl + '/LoadingSearchResults.do';
+        app.form.action = app.options.affUrl ? 'http://' + app.options.affUrl + '/LoadingSearchResults.do' : 'http://www.rentalcars.com/LoadingSearchResults.do';
 
         if (app.options.affiliateCode) app.form.affiliateCode.value = app.options.affiliateCode;
         if (app.options.preflang) app.form.preflang.value = app.options.preflang;
@@ -503,16 +502,57 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
         app.setupForm();
         app.setupDate();
 
+        if (app.options.script) {
+            var rcAppAddScript;
+            switch (typeof app.options.script) {
+                case "string":
+                    app.getScript(app.resourceUrl + app.options.script, 'rcAppAddScript');
+                    rcAppAddScript = document.getElementById('rcAppAddScript');
+                    rcAppAddScript.parentNode.removeChild(rcAppAddScript);
+                    break;
+                case "object":
+                    for (var i = 0, n = app.options.script.length; i < n; i++) {
+                        app.getScript(app.resourceUrl + app.options.script[i], 'rcAppAddScript-' + i);
+                        rcAppAddScript = document.getElementById('rcAppAddScript-' + i);
+                        rcAppAddScript.parentNode.removeChild(rcAppAddScript);
+                    }
+                    break;
+            }
+        }
+
         rcAppScript.parentNode.removeChild(rcAppScript);
         rcAppDataScript.parentNode.removeChild(rcAppDataScript);
+    };
+
+    app.getOptionsFromScript = function() {
+        var scriptSrc = document.getElementById("rcAppScript").attributes.src.value;
+
+        if (scriptSrc.indexOf('?') >= 0) {
+            var scriptQuery = scriptSrc.substr(scriptSrc.indexOf('?') + 1).split('&');
+
+            if (scriptQuery === "") return {};
+
+            var obj = {};
+            for (var i = 0; i < scriptQuery.length; ++i)
+            {
+                var parameter = scriptQuery[i].split('=', 2);
+                if (parameter.length == 1)
+                    obj[parameter[0]] = "";
+                else
+                    obj[parameter[0]] = decodeURIComponent(parameter[1]);
+            }
+            console.log(obj);
+            return obj;
+        } else {
+            console.log("rentalcars.com | No paramaters found for application to initiate.");
+        }
     };
 
     app.init = function(data) {
         app.messages = app.messages ? app.extend(data, app.messages) : data;
 
         if (app.options.template) {
-            // app.getScript(app.resourceUrl + 'templates/' + app.options.template, 'rcAppTemplate');
-            app.getScript('../stand-alone-templates/compiled/' + app.options.template, 'rcAppTemplate');
+            app.getScript(app.resourceUrl + 'templates/' + app.options.template, 'rcAppTemplate');
         } else {
             app.setupTemplate(template);
         }
@@ -525,14 +565,16 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
         calendarMonths: null
     };
 
-    app.options = app.extend(defaults, app.options);
+    if (!app.options) {
+        app.options = app.extend(defaults, app.getOptionsFromScript());
+    } else {
+        app.options = app.extend(defaults, app.options);
+    }
 
-    if (app.options.secure) {
-        app.baseUrl = 'https://secure.rentalcars.com';
-    } else if (app.options.affUrl) {
+    if (app.options.affUrl) {
         app.baseUrl = 'http://' + app.options.affUrl;
     } else {
-        app.baseUrl = 'http://www.rentalcars.com';
+        app.baseUrl = 'https://secure.rentalcars.com';
     }
 
     app.search = {
@@ -547,19 +589,11 @@ require(['handlebars.runtime', 'moment', 'pikaday', 'template'], function(Handle
             app.cssLoader(app.resourceUrl + 'css/base');
             break;
         case "string":
-            var sheetStr = app.options.css;
-            if (sheetStr.indexOf("root~/") === 0) {
-                sheetStr = sheetStr.replace(/root~/, app.resourceUrl);
-            }
-            app.cssLoader(sheet);
+            app.cssLoader(app.resourceUrl + app.options.css);
             break;
         case "object":
             for (var i = 0, n = app.options.css.length; i < n; i++) {
-                var sheetArr = app.options.css[i];
-                if (sheetArr.indexOf("root~/") === 0) {
-                    sheetArr = sheetArr.replace(/root~\//, app.resourceUrl);
-                }
-                app.cssLoader(sheetArr);
+                app.cssLoader(app.resourceUrl + app.options.css[i]);
             }
             break;
         case "boolean":
